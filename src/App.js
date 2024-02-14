@@ -1,25 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PageHome from "./components/pages/Home";
+import PageChartExample from "./components/pages/ChartExample";
+import DatabaseProvider from "./hooks/DatabaseProvider";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <DatabaseProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<PageHome />} />
+                    <Route path="/example" element={<PageChartExample />} />
+                </Routes>
+            </BrowserRouter>
+        </DatabaseProvider>
+    );
 }
 
 export default App;
