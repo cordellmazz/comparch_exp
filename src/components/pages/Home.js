@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
-import atlasConfig from "../../atlasConfig.json";
-import * as Realm from "realm-web";
-import { useDatabase } from "../../hooks/DatabaseProvider";
-
-const app = new Realm.App({ id: atlasConfig.appId });
+import { useDatabase } from "../../context/DatabaseProvider";
+import FlexBox from "../layout/structure/FlexBox";
+import Navigation from "../layout/Navigation";
 
 function PageHome() {
-    const { fetchDocuments } = useDatabase();
+    const { findByParams } = useDatabase();
+
+    function wrapper() {
+        findByParams({ ID: "Run1" });
+    }
+
     return (
-        <div>
-            <button onClick={fetchDocuments}>Get Run</button>
-        </div>
+        <>
+            <Navigation />
+            <FlexBox>
+                <button onClick={wrapper}>Get Run</button>
+            </FlexBox>
+        </>
     );
 }
 
