@@ -1,47 +1,63 @@
-import React, { useEffect, useState } from "react";
-import Run from "../../CollectionRun.js";
-import atlasConfig from "../../atlasConfig.json";
-import * as Realm from "realm-web";
+// simple react file that shows an example of chartjs
+import React, { useState, useEffect } from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartBar from "../layout/ChartBar.js";
+import { useDatabase } from "../../context/DatabaseProvider.js";
+import FlexBox from "../layout/structure/FlexBox.js";
+import FlexColumn from "../layout/structure/FlexColumn.js";
+import Navigation from "../layout/Navigation.js";
+import CESlider from "../input/CESlider.js";
+import SimModTest from "../layout/simulation/SimModTest.js";
+import * as CEConfig from "../layout/simulation/CEConfig.js";
 
-const app = new Realm.App({ id: atlasConfig.appId });
+function PageChartExample() {
+    const [chartData, setChartData] = useState({});
+    const { findByParams } = useDatabase();
+    const [specifications, setSpecifications] = useState({});
 
-function PageHome() {
-    const [isLoading, setIsLoading] = useState(true);
+    ChartJS.register(ArcElement, Tooltip, Legend);
+
     useEffect(() => {
-        // Perform an anonymous login
-        loginAnonymously().then(() => setIsLoading(false));
-    }, []);
+        const updateChartData = async () => {
+            // const result = await findByParams({ ID: "Run1" });
+            // dummy data for now
+            const result = {
+                some_value: 1,
+                another_value: 2,
+                third_value: 3,
+            };
+            setChartData(result);
+        };
+        updateChartData();
+    }, [specifications]);
 
-    async function loginAnonymously() {
-        try {
-            // Attempt to log in anonymously
-            await app.logIn(Realm.Credentials.anonymous());
-            console.log("Successfully logged in anonymously");
-        } catch (error) {
-            console.error("Failed to log in anonymously", error);
-        }
+    useEffect(() => {
+        console.log(chartData);
+    }, [chartData]);
+
+    function removeName(data) {
+        let modifiedData = { ...data };
+        delete modifiedData.name;
+        return modifiedData;
     }
 
-    // Example: Query all documents
-    async function fetchDocuments() {
-        const mongodb = app.currentUser.mongoClient(atlasConfig.dataSourceName);
-        const myCollection = mongodb.db("Projects").collection("Project1");
-        const documents = await myCollection.find();
-        console.log(documents);
-    }
-
-    async function getRun() {
-        const runs = await Run.find({ ID: "Run1" });
-        console.log(runs);
-    }
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    const [sliderValue, setSliderValue] = useState(0);
 
     return (
-        <div>
-            <button onClick={fetchDocuments}>Get Run</button>
-        </div>
+        <FlexBox>
+            <Navigation />
+            <FlexColumn>
+                <ChartBar data={chartData ? chartData : {}} />
+            </FlexColumn>
+            <FlexColumn>
+                <CESlider
+                    width={200}
+                    value={sliderValue}
+                    setValue={setSliderValue}
+                />
+            </FlexColumn>
+        </FlexBox>
     );
 }
+
+export default PageChartExample;

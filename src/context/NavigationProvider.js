@@ -19,9 +19,7 @@ export const NavBarProvider = ({ children }) => {
 export const useNavBar = () => {
     const context = useContext(NavBarContext);
     if (!context) {
-        throw new Error(
-            "useNavigation must be used within a NavigationProvider"
-        );
+        throw new Error("useNavBar must be used within a NavigationProvider");
     }
     return context;
 };

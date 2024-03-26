@@ -5,6 +5,7 @@ import styled from "styled-components";
 const FlexBoxContainer = styled.div`
     display: flex;
     width: 100%;
+    min-width: 400px;
     height 100%;
     flex-direction: ${(props) => props.direction};
     justify-content: ${(props) => props.justify};

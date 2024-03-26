@@ -17,8 +17,9 @@ const DatabaseProvider = ({ children }) => {
     // internal functions
     async function loginAnonymously() {
         try {
-            const user = await app.logIn(credentials);
-            setUser(user);
+            // const user = await app.logIn(credentials);
+            // setUser(user);
+            console.log("Temporarily haulted");
             console.log("Successfully logged in anonymously");
             setLoaded(true);
         } catch (error) {
@@ -63,16 +64,19 @@ const DatabaseProvider = ({ children }) => {
         }
     }
 
+    async function addRun(run) {
+        const result = await user.functions.addRun(run);
+        console.log(result);
+    }
+
     const exportValues = {
         findByParams,
         testFunc,
+        addRun,
+        loaded,
     };
 
-    return (
-        <DatabaseContext.Provider value={exportValues}>
-            {children}
-        </DatabaseContext.Provider>
-    );
+    return <DatabaseContext.Provider value={exportValues}>{children}</DatabaseContext.Provider>;
 };
 export default DatabaseProvider;
 
