@@ -4,8 +4,10 @@ import * as Realm from "realm-web";
 
 const DatabaseContext = createContext({ state: {}, actions: {} });
 
-const app = new Realm.App({ id: atlasConfig.appId });
-const credentials = Realm.Credentials.anonymous();
+// const app = new Realm.App({ id: atlasConfig.appId });
+const app = Realm.getApp(atlasConfig.appId);
+
+// reminder to bulk delete anon users
 
 const DatabaseProvider = ({ children }) => {
     const [loaded, setLoaded] = useState(false);
@@ -17,35 +19,36 @@ const DatabaseProvider = ({ children }) => {
     // internal functions
     async function loginAnonymously() {
         try {
-            // const user = await app.logIn(credentials);
-            // setUser(user);
-            console.log("Temporarily haulted");
-            console.log("Successfully logged in anonymously");
+            const credentials = Realm.Credentials.anonymous();
+            await app.logIn(credentials);
+            setUser(app.currentUser);
             setLoaded(true);
+            console.log("Successfully logged in anonymously!");
         } catch (error) {
-            console.error("Failed to log in anonymously", error);
+            console.error("Failed to log in anonymously.", error);
         }
     }
 
-    // async function connectToMongoDB() {
-    //     try {
-    //         // instantiate mongo client
-    //         const mdb = app.currentUser.mongoClient(atlasConfig.dataSourceName);
-    //         // path to project
-    //         // do we need to specify a specific collection? or can we just pass in Projects
-    //         const projects = mdb.db("Projects").collection("Project1");
-    //         setMongodb(mdb);
-    //         setDatabase(projects);
-
-    //         console.log("Connected to MongoDB");
-    //     } catch (error) {
-    //         console.error("Failed to connect to database", error);
-    //     }
-    // }
+    const logout = async () => {
+        try {
+            await app.currentUser?.logOut();
+            setUser(null);
+            console.log("Successfully logged out!");
+        } catch (error) {
+            console.error("Failed to log out", error);
+        }
+    };
 
     useEffect(() => {
-        loginAnonymously();
-        // connectToMongoDB();
+        // see if there are anonymous credentials in local storage, if not log in anonymously and store credentials in local storage
+        if (!app.currentUser) {
+            loginAnonymously();
+        }
+
+        return () => {
+            console.log("cleanup");
+            logout();
+        };
     }, []);
 
     async function testFunc(text) {
@@ -62,6 +65,30 @@ const DatabaseProvider = ({ children }) => {
         } catch (error) {
             console.error("Document could not be found", error);
         }
+    }
+
+    /**
+     * Returns all documents that fall within the given range
+     *
+     * @param {string} parameterName parameter by which to query
+     * @param {{"start": "<start of range>", "end": "<end of range>"}} range
+     * @returns all documents that fall within the given range
+     */
+    async function queryByRange(parameterName, range) {
+        const result = await user.functions.queryByRange(parameterName, range);
+        console.log(result);
+        // return result;
+    }
+
+    /**
+     * For use in the sweep SimMod
+     * @param {JSON} staticParams these parameters are not the focus of the query but are the base to filter on. expected structure {"parameterName": "value", ...}
+     * @param {JSON} sweepParams parameters to focus on in graphing.
+     * Expected structure {"parameterName": {"type": "range" or "list", "start": beginningVal, "end": endVal, "list": ["val1", "val2", ...] or [1, 2, 4], ...}
+     */
+    async function filterAndSweepRuns(staticParams, sweepParams) {
+        const result = await user.functions.filterAndSweepRuns(staticParams, sweepParams);
+        console.log(result);
     }
 
     async function addRun(run) {

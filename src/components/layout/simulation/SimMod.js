@@ -19,12 +19,12 @@ const SimModDiv = styled.div`
     position: relative;
     margin: 10px;
     border-radius: 10px;
-    border: 1px solid black;
+    border: 1px solid;
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;
     min-width: 35vw;
-    min-height: 93vh;
+    min-height: 92vh;
 `;
 
 // styled div for the sim module when it is deleted
@@ -88,6 +88,7 @@ const DeleteButton = styled.button`
 
     transition: 0.14s;
     &:hover {
+        border: 1px solid #bf5700;
         background-color: #bf5700;
         color: white;
     }
@@ -103,11 +104,9 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
     const [isDeleted, setIsDeleted] = useState(false);
 
     useEffect(() => {
-        console.log("isDeleted: ", isDeleted);
         if (isDeleted) {
             const timer = setTimeout(() => {
                 deleteConfig(index);
-                console.log("deleting config");
             }, slideOutTime * 1000);
             return () => clearTimeout(timer);
         }
@@ -141,6 +140,7 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
         }
     }, [localConfig]);
 
+    // when we query for a new run we should store the search result in a state variable in the SimModContainer
     function searchForRun() {
         console.log("Searching for run with the following parameters:");
         console.log(config);

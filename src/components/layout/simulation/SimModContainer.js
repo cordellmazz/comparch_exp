@@ -75,12 +75,10 @@ function SimModContainer() {
     const [defaultConfig] = useState(CEConfig.DefaultConfig);
     const [loaded, setLoaded] = useState(false);
     const [configs, setConfigs] = useState([{ ...defaultConfig, id: uniqueID(), name: "" }]);
-
+    // database data is stored in configs under the key "dbData"
     // useEffect to load configs from local storage
     useEffect(() => {
         const localConfigs = JSON.parse(localStorage.getItem("configs"));
-        console.log("Local configs: ");
-        console.log(localConfigs);
         if (localConfigs) {
             setConfigs(localConfigs);
         }
@@ -109,6 +107,7 @@ function SimModContainer() {
                 ...defaultConfig,
                 id: uniqueID(),
                 name: "",
+                dbData: {}, // make an empty JSON object for later use storing database data
             };
             setConfigs((currentConfigs) => [...currentConfigs, newConfig]);
         }

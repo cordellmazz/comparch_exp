@@ -1,8 +1,8 @@
 // Objects associated with each parameter and if they are optional or not
 const ParameterTypes = {
-    CPU_TYPES: "dropdown.sliders",
-    BRANCH_PREDICTORS: "checkbox",
-    CACHE: "sliders",
+    CPU_TYPES: "dropdown.dsliders", // dropdown means only one option is presented at a time, and .dsliders means that the option will have a discrete (d) slider
+    BRANCH_PREDICTORS: "dropdown",
+    CACHE: "list.dsliders", // list means all options are presented at once
     PREFETCHERS: "dropdown",
     REPLACEMENT_POLICIES: "dropdown",
     COHERENCE_POLICIES: "dropdown",
@@ -43,7 +43,7 @@ const BranchPredictors = {
 // mock nested dictonaries for now
 const Cache = {
     Size: [0, 2, 4, 8, 16, 32, 64],
-    Associativity: [0, 2, 4, 8, 16, 32, 64],
+    Associativity: [1, 2, 3, 4, 5],
     Tag_latency: [0, 2, 4, 8, 16, 32, 64],
     Response_latency: [0, 2, 4, 8, 16, 32, 64],
     Number_of_MSHRs: [0, 2, 4, 8, 16, 32, 64],
