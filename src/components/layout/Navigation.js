@@ -65,7 +65,7 @@ const Navigation = () => {
     return (
         <>
             <SidebarButton active={active} onClick={toggleActive}>
-                <FontAwesomeIcon icon={faBars} size="small" />
+                <FontAwesomeIcon icon={faBars} />
             </SidebarButton>
             <SidebarContainer active={active}>
                 <MenuItem href="/">Home</MenuItem>

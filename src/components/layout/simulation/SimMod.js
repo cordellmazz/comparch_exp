@@ -11,6 +11,7 @@ import FlexRow from "../structure/FlexRow.js";
 import * as CEConfig from "./CEConfig.js";
 import CEDiscreteSlider from "../../input/CEDiscreteSlider.js";
 import styled from "styled-components";
+import RecursiveStructure from "../../input/ConfigInput.js";
 
 const slideOutTime = 0.5; // in seconds
 
@@ -33,7 +34,8 @@ const SimModDivAnimated = styled(SimModDiv)`
         max-width: 0;
         min-width: 0;
         padding: 0;
-        margin: 0;
+        margin-left: 0;
+        margin-right: 0;
         opacity: 0;
         overflow: hidden;
         transition: min-width ${slideOutTime - 0.05}s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out,
@@ -118,6 +120,8 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
 
     // This function handles updating the local config which will then update the global config
     const updateConfig = (path, value) => {
+        path = path.toLowerCase();
+        console.log("Updating config at path: ", path, " with value: ", value);
         setLocalConfig((origConfig) => {
             const updateAttribute = (obj, keys, val) => {
                 const key = keys[0];
@@ -186,79 +190,7 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
                         <ChartBar data={chartData ? chartData : {}} />
                     </FlexRow>
                     <FlexColumn>
-                        <CEDropdown
-                            value={config.cpuType}
-                            setValue={(val) => updateConfig("cpuType", val)}
-                            options={CEConfig.CpuTypes}
-                            title={"CPU Type:"}
-                        />
-                        <CEDropdown
-                            title="Branch Predictor:"
-                            value={config.branchPredictor}
-                            setValue={(val) => updateConfig("branchPredictor", val)}
-                            options={CEConfig.BranchPredictors}
-                        />
-                        <>Cache</>
-                        <CEDiscreteSlider
-                            title="Size:"
-                            value={config.cache.size}
-                            setValue={(val) => updateConfig("cache.size", val)}
-                            options={CEConfig.Cache.Size}
-                        />
-                        <CEDiscreteSlider
-                            title="Associativity:"
-                            value={config.cache.associativity}
-                            setValue={(val) => updateConfig("cache.associativity", val)}
-                            options={CEConfig.Cache.Associativity}
-                        />
-                        <CEDiscreteSlider
-                            title="Tag Latency:"
-                            value={config.cache.tagLatency}
-                            setValue={(val) => updateConfig("cache.tagLatency", val)}
-                            options={CEConfig.Cache.Tag_latency}
-                        />
-                        <CEDiscreteSlider
-                            title="Data Latency:"
-                            value={config.cache.dataLatency}
-                            setValue={(val) => updateConfig("cache.dataLatency", val)}
-                            options={CEConfig.Cache.Response_latency}
-                        />
-                        <CEDiscreteSlider
-                            title="Response Latency:"
-                            value={config.cache.responseLatency}
-                            setValue={(val) => updateConfig("cache.responseLatency", val)}
-                            options={CEConfig.Cache.Response_latency}
-                        />
-                        <CEDiscreteSlider
-                            title="Number of MSHRs:"
-                            value={config.cache.numberOfMshrs}
-                            setValue={(val) => updateConfig("cache.numberOfMshrs", val)}
-                            options={CEConfig.Cache.Number_of_MSHRs}
-                        />
-                        <CEDiscreteSlider
-                            title="Targets of MSHRs:"
-                            value={config.cache.targetsOfMshrs}
-                            setValue={(val) => updateConfig("cache.targetsOfMshrs", val)}
-                            options={CEConfig.Cache.Targets_of_MSHRs}
-                        />
-                        <CEDropdown
-                            title="Prefetcher:"
-                            value={config.prefetcher}
-                            setValue={(val) => updateConfig("prefetcher", val)}
-                            options={CEConfig.Prefetchers}
-                        />
-                        <CEDropdown
-                            title="Replacement Policie:"
-                            value={config.replacementPolicy}
-                            setValue={(val) => updateConfig("replacementPolicy", val)}
-                            options={CEConfig.ReplacementPolicies}
-                        />
-                        <CEDropdown
-                            title="Coherence Policie:"
-                            value={config.coherencePolicy}
-                            setValue={(val) => updateConfig("coherencePolicy", val)}
-                            options={CEConfig.CoherencePolicies}
-                        />
+                        <RecursiveStructure config={config} updateConfig={updateConfig} />
                     </FlexColumn>
                     <CEButton title={"Update Module"} func={searchForRun} />
                 </FlexColumn>

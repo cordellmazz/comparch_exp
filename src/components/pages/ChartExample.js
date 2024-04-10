@@ -4,6 +4,7 @@ import { useDatabase } from "../../context/DatabaseProvider.js";
 import FlexBox from "../layout/structure/FlexBox.js";
 import Navigation from "../layout/Navigation.js";
 import SimModContainer from "../layout/simulation/SimModContainer.js";
+import RecursiveStructure from "../input/ConfigInput.js";
 
 function PageChartExample() {
     const [chartData, setChartData] = useState({});

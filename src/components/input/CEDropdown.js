@@ -32,16 +32,16 @@ const CEDropdown = ({ width, height, value, setValue, title = "", options }) => 
         }
 
         return Object.entries(options).map(([key, value]) => {
-            if (typeof value === "object") {
+            if (typeof value === "object" && value.title) {
                 return {
-                    key: value.Type,
-                    value: value.Value,
+                    key: value.title,
+                    value: key,
                 };
             }
 
             return {
                 key,
-                value: value,
+                value: key,
             };
         });
     };
@@ -49,6 +49,7 @@ const CEDropdown = ({ width, height, value, setValue, title = "", options }) => 
     const processedOptions = normalizeOptions();
 
     const handleChange = (e) => {
+        console.log("Changing this stupid value, " + e.target.value);
         setValue(e.target.value);
     };
 
