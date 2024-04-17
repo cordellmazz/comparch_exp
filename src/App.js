@@ -11,8 +11,8 @@ function App() {
             <DatabaseProvider>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<PageHome />} />
-                        <Route path="/example" element={<PageSimulation />} />
+                        <Route path="/" element={<PageSimulation />} />
+                        <Route path="/about" element={<PageSimulation />} />
                     </Routes>
                 </BrowserRouter>
             </DatabaseProvider>

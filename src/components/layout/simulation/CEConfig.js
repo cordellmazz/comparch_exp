@@ -668,22 +668,6 @@ if (localStorage.getItem("defaultConfig") === null) {
 
 const DefaultMetricsConfig = processConfig(metricOptions);
 
-export {
-    ParameterTypes,
-    ParameterOptional,
-    CpuTypes,
-    BranchPredictors,
-    Cache,
-    Prefetchers,
-    ReplacementPolicies,
-    CoherencePolicies,
-    DefaultConfig,
-    DefaultMetricsConfig,
-    simModStructure,
-    metricOptions,
-    findSelected,
-};
-
 /**
  * l1d_size
  * l1i_size
@@ -696,7 +680,7 @@ export {
  * board_clk_freq
  */
 
-const exampleDoc = {
+const firstDoc = {
     _id: { $oid: "66147cd41cc614b221aa639a" },
     // configs
     Name: "50w_minor_16l1_256l2",
@@ -983,4 +967,21 @@ const exampleDoc = {
     renamedOperands: null,
     robReads: null,
     robWrites: null,
+};
+
+export {
+    ParameterTypes,
+    ParameterOptional,
+    CpuTypes,
+    BranchPredictors,
+    Cache,
+    Prefetchers,
+    ReplacementPolicies,
+    CoherencePolicies,
+    DefaultConfig,
+    DefaultMetricsConfig,
+    simModStructure,
+    metricOptions,
+    findSelected,
+    firstDoc,
 };

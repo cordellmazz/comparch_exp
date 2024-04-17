@@ -19,6 +19,9 @@ const SimModContainerDiv = styled.div`
 // input button which adds a new simulation module to the container, on hover it turns orange with a slight delay
 const AppendButton = styled.button`
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     margin: 10px;
     padding: 10px;
@@ -43,6 +46,9 @@ const SaveButton = styled(AppendButton)`
     height: 25%;
     writing-mode: vertical-rl;
     text-orientation: mixed;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 `;
 
 const ButtonContainer = styled.div`
@@ -107,10 +113,32 @@ function SimModContainer() {
                 input: defaultConfig,
                 id: uniqueID(),
                 name: "",
-                db_data: {}, // make an empty JSON object for later use storing database data
+                db_data: [{ ...CEConfig.firstDoc }], // make an empty JSON object for later use storing database data
                 selected_metrics: [],
             };
             setConfigs((currentConfigs) => [...currentConfigs, newConfig]);
+        }
+    };
+
+    // shift config to the right in the array
+    const shiftRight = (index) => {
+        if (index < configs.length - 1) {
+            const newConfigs = [...configs];
+            const temp = newConfigs[index];
+            newConfigs[index] = newConfigs[index + 1];
+            newConfigs[index + 1] = temp;
+            setConfigs(newConfigs);
+        }
+    };
+
+    // shift config to the left in the array
+    const shiftLeft = (index) => {
+        if (index > 0) {
+            const newConfigs = [...configs];
+            const temp = newConfigs[index];
+            newConfigs[index] = newConfigs[index - 1];
+            newConfigs[index - 1] = temp;
+            setConfigs(newConfigs);
         }
     };
 
@@ -151,6 +179,8 @@ function SimModContainer() {
                             setConfig={generateSetConfig(config.id)}
                             index={configs.indexOf(config)}
                             deleteConfig={() => deleteConfig(config.id)}
+                            shiftLeft={() => shiftLeft(index)}
+                            shiftRight={() => shiftRight(index)}
                         />
                     ))}
                 </SimModContainerDiv>

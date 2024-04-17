@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 import styled from "styled-components";
 import { useDatabase } from "../../../context/DatabaseProvider";
-import * as CEConfig from "../simulation/CEConfig";
 
 const GraphSweepViewContainer = styled.div`
     width: 100%;
@@ -15,9 +14,6 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
     // canvas specifc values
     const canvasRef = useRef(null);
     const chartInstanceRef = useRef(null);
-
-    // data
-    const { filterAndSweepRuns } = useDatabase();
 
     // visual / animations
     const [graphLoading, setGraphLoading] = useState(false);

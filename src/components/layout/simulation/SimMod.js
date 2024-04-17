@@ -1,11 +1,10 @@
 // reduced version of simulation module that relies on SimModContainer to provide the config and setConfig functions
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDatabase } from "../../../context/DatabaseProvider.js";
 import CEButton from "../../input/CEButton.js";
 import FlexBox from "../structure/FlexBox.js";
 import FlexColumn from "../structure/FlexColumn.js";
 import FlexRow from "../structure/FlexRow.js";
-import styled from "styled-components";
 import RecursiveStructure from "../../input/ConfigInput.js";
 import GraphSweepView from "../graphing/GraphSweepView.js";
 import CEDropdown from "../../input/CEDropdown.js";
@@ -22,16 +21,22 @@ import {
     DeleteButton,
     SelectedMetrics,
     SweepSelectorContainer,
+    ReorderArrows,
+    ViewTypeSwitcher,
 } from "./SimModDivs.js";
+import GraphDefaultView from "../graphing/GraphDefaultView.js";
 
-export function SimMod({ config, setConfig, index, deleteConfig }) {
+export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shiftRight }) {
+    // component states
+    const [isDeleted, setIsDeleted] = useState(false); // for animation
+    const [viewType, setViewType] = useState("default"); // ["default", "sweep"]
+
     // graph data
     const { findByParams } = useDatabase();
     const [selectedMetrics, setSelectedMetrics] = useState(config.selected_metrics);
     const [sweepParameter, setSweepParameter] = useState(config.sweep_parameter || "l1d_size");
-
-    // animation
-    const [isDeleted, setIsDeleted] = useState(false);
+    const [dbData, setDbData] = useState(config.db_data);
+    const [metricChoice, setMetricChoice] = useState(CEConfig.DefaultMetricsConfig);
 
     useEffect(() => {
         if (isDeleted) {
@@ -76,37 +81,6 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
         updateConfig("sweep_parameter", sweepParameter);
     }, [sweepParameter]);
 
-    // const selectedVals = CEConfig.findDeepestSelected(config.input);
-
-    // data processing from config
-    const [dbData, setDbData] = useState(config.db_data);
-    const { filterAndSweepRuns } = useDatabase();
-    const [metricChoice, setMetricChoice] = useState(CEConfig.DefaultMetricsConfig);
-
-    async function testSweep() {
-        const results = await filterAndSweepRuns(
-            // pass in selected value for every param here, then every possibility for the sweep parameter in the next object
-            { memory_size: "2GB", l1d_size: "16kB", l1i_size: "16kB" }, // for every parameter that is not defined here, it adds another dimension to the graph. So this should probably be mandatory to define every other parameter
-            {
-                l2_size: { type: "list", values: ["256kB", "512kB"] },
-            }
-        );
-        console.log("results", results);
-        setDbData(results);
-    }
-
-    // function getSelectedValue() {
-    //     let currentSelection = metricChoice["groups"]["selected"].toLowerCase();
-    //     let current = metricChoice["groups"][currentSelection];
-
-    //     while (current) {
-    //         currentSelection = current["selected"];
-    //         current = current[currentSelection.toLowerCase()];
-    //     }
-
-    //     return currentSelection;
-    // }
-
     function addMetricToSet() {
         const newSelection = Object.values(CEConfig.findSelected(metricChoice))[0];
         if (!selectedMetrics.includes(newSelection)) {
@@ -117,9 +91,12 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
     async function getSimulation() {
         const inputSelections = CEConfig.findSelected(config.input);
         // filtered selections where its every parameter except the sweep parameter
-        const staticParams = Object.fromEntries(
-            Object.entries(inputSelections).filter(([key, value]) => key !== sweepParameter)
-        );
+        let staticParams = inputSelections;
+        if (viewType === "sweep") {
+            staticParams = Object.fromEntries(
+                Object.entries(inputSelections).filter(([key, value]) => key !== sweepParameter)
+            );
+        }
         const result = await findByParams(staticParams);
         // if result is empty array then error
         if (result.length === 0) {
@@ -136,6 +113,7 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
                 defaultValue={config.name === "" ? `Simulation ${index + 1}` : config.name}
                 onChange={(e) => updateConfig("name", e.target.value)}
             />
+            <ReorderArrows shiftLeft={shiftLeft} shiftRight={shiftRight} />
             <DeleteButton
                 onClick={() => {
                     setIsDeleted(true);
@@ -143,51 +121,63 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
             >
                 remove
             </DeleteButton>
+            <ViewTypeSwitcher viewType={viewType} setViewType={setViewType} updateConfig={updateConfig} />
             <FlexBox>
                 <RowColSwapContainer>
-                    <GraphSweepView
-                        config={config}
-                        updateConfig={updateConfig}
-                        selectedMetrics={selectedMetrics}
-                        sweepParameter={sweepParameter}
-                        dbData={dbData}
-                    />
-                    <FlexColumn align={"left"}>
-                        <RecursiveStructure
-                            structure={CEConfig.metricOptions}
-                            config={metricChoice}
-                            updateConfig={(path, value) => {
-                                updateConfig(path, value, setMetricChoice);
-                            }}
+                    {viewType === "default" ? (
+                        <GraphDefaultView config={config} updateConfig={updateConfig} dbData={dbData} />
+                    ) : (
+                        <GraphSweepView
+                            config={config}
+                            updateConfig={updateConfig}
+                            selectedMetrics={selectedMetrics}
+                            sweepParameter={sweepParameter}
+                            dbData={dbData}
                         />
-                        <CEButton title={"Add Metric"} func={addMetricToSet} />
-                        <SelectedMetrics>
-                            <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
-                        </SelectedMetrics>
-                        <SweepSelectorContainer>
-                            <FlexRow>
-                                <CEDropdown
-                                    title={"Sweep Metric:"}
-                                    value={sweepParameter}
-                                    setValue={setSweepParameter}
-                                    options={[
-                                        "l1d_size",
-                                        "l1i_size",
-                                        "l2_size",
-                                        "memory_type",
-                                        "memory_size",
-                                        "cpu_type",
-                                        "isa",
-                                        "num_cores",
-                                        "board_clk_freq",
-                                    ]}
+                    )}
+                    <FlexColumn align={"left"}>
+                        {viewType === "default" ? null : (
+                            <>
+                                <RecursiveStructure
+                                    structure={CEConfig.metricOptions}
+                                    config={metricChoice}
+                                    updateConfig={(path, value) => {
+                                        updateConfig(path, value, setMetricChoice);
+                                    }}
                                 />
-                                <InfoTip
-                                    tooltipText={"Select a metric to sweep over (x axis), value will be ignored below."}
-                                    position="left"
-                                />
-                            </FlexRow>
-                        </SweepSelectorContainer>
+                                <CEButton title={"Add Metric"} func={addMetricToSet} />
+                                <SelectedMetrics>
+                                    <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
+                                </SelectedMetrics>
+                                <SweepSelectorContainer>
+                                    <FlexRow>
+                                        <CEDropdown
+                                            title={"Sweep Metric:"}
+                                            value={sweepParameter}
+                                            setValue={setSweepParameter}
+                                            options={[
+                                                "l1d_size",
+                                                "l1i_size",
+                                                "l2_size",
+                                                "memory_type",
+                                                "memory_size",
+                                                "cpu_type",
+                                                "isa",
+                                                "num_cores",
+                                                "board_clk_freq",
+                                            ]}
+                                        />
+                                        <InfoTip
+                                            tooltipText={
+                                                "Select a metric to sweep over (x axis), value will be ignored below."
+                                            }
+                                            position="left"
+                                        />
+                                    </FlexRow>
+                                </SweepSelectorContainer>
+                            </>
+                        )}
+
                         <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
                         <CEButton title={"Get Simulation"} func={getSimulation} />
                     </FlexColumn>

@@ -1,19 +1,16 @@
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faArrowLeft, faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 
 const slideOutTime = 0.5; // in seconds
 
 const RowColSwapContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: ${(props) => (props.isRow ? "row" : "column")};
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
-
-    // @media (min-width: 1000px) {
-    //     // Switch to row layout when width is 600px or more
-    //     flex-direction: row;
-    // }
 `;
 
 const SweepSelectorContainer = styled.div`
@@ -36,11 +33,13 @@ const SimModDiv = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
     min-width: 35vw;
-    min-height: 92vh;
+    height: 92vh;
 `;
 
 // styled div for the sim module when it is deleted
 const SimModDivAnimated = styled(SimModDiv)`
+    resize: horizontal;
+    flex-shrink: 0;
     &.slide-out {
         max-width: 0;
         min-width: 0;
@@ -82,6 +81,47 @@ const TitleInput = styled.input`
     z-index: 2;
     color: gray;
 `;
+
+const ShiftArrow = styled.div`
+    position: absolute;
+    top: 0;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 500px;
+    border: 1px solid gray;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    z-index: 1;
+    transition: 0.14s;
+    height: 16px;
+    &:hover {
+        border: 1px solid #bf5700;
+        background-color: #bf5700;
+        color: white;
+    }
+`;
+
+const ShiftArrowRight = styled(ShiftArrow)`
+    left: calc(50% + 75px);
+`;
+
+const ShiftArrowLeft = styled(ShiftArrow)`
+    left: calc(50% + 45px);
+`;
+
+const ReorderArrows = ({ shiftRight, shiftLeft }) => {
+    return (
+        <>
+            <ShiftArrowLeft onClick={shiftLeft}>
+                <FontAwesomeIcon icon={faArrowLeft} />
+            </ShiftArrowLeft>
+            <ShiftArrowRight onClick={shiftRight}>
+                <FontAwesomeIcon icon={faArrowRight} />
+            </ShiftArrowRight>
+        </>
+    );
+};
 
 // styled input at top right that is styled the same as the append button
 const DeleteButton = styled.button`
@@ -136,6 +176,13 @@ const Highlighter = styled.div`
     }
 `;
 
+const TextContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 5px;
+    overflow: hidden;
+`;
+
 // component for text highlighter that if the highlight is hovered over it gets a red overlay, and if it is clicked it is removed from a list
 function TextOptions({ texts, setTexts }) {
     function removeFunc(text) {
@@ -146,7 +193,7 @@ function TextOptions({ texts, setTexts }) {
         return null;
     }
     return (
-        <>
+        <TextContainer>
             Metrics: &nbsp;
             {texts.map((text, index) => (
                 <Highlighter key={index} onClick={() => removeFunc(text)}>
@@ -156,7 +203,25 @@ function TextOptions({ texts, setTexts }) {
                     </p>
                 </Highlighter>
             ))}
-        </>
+        </TextContainer>
+    );
+}
+
+const TypeToggle = styled(ShiftArrow)`
+    left: calc(50% + 105px);
+`;
+
+// component for switching between viewTypes
+function ViewTypeSwitcher({ viewType, setViewType, updateConfig }) {
+    function switchType() {
+        setViewType(viewType === "default" ? "sweep" : "default");
+        updateConfig("view_type", viewType === "default" ? "sweep" : "default");
+    }
+
+    return (
+        <TypeToggle onClick={switchType}>
+            {viewType === "default" ? <FontAwesomeIcon icon={faToggleOff} /> : <FontAwesomeIcon icon={faToggleOn} />}
+        </TypeToggle>
     );
 }
 
@@ -173,4 +238,6 @@ export {
     TextOptions,
     HideContainer,
     SweepSelectorContainer,
+    ReorderArrows,
+    ViewTypeSwitcher,
 };
