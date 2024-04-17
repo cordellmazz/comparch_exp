@@ -102,12 +102,13 @@ function SimModContainer() {
     };
 
     const appendNewConfig = () => {
-        if (configs.length < 20) {
+        if (configs.length < 10) {
             const newConfig = {
-                ...defaultConfig,
+                input: defaultConfig,
                 id: uniqueID(),
                 name: "",
-                dbData: {}, // make an empty JSON object for later use storing database data
+                db_data: {}, // make an empty JSON object for later use storing database data
+                selected_metrics: [],
             };
             setConfigs((currentConfigs) => [...currentConfigs, newConfig]);
         }
@@ -136,7 +137,7 @@ function SimModContainer() {
                     <ButtonContainer>
                         <AppendButton onClick={appendNewConfig}>
                             <FontAwesomeIcon icon={faPlus} size="2x" />
-                            <ModuleCounter>{configs.length}/20</ModuleCounter>
+                            <ModuleCounter>{configs.length}/10</ModuleCounter>
                         </AppendButton>
                         <SaveButton onClick={saveState}>
                             <FontAwesomeIcon icon={faSave} />

@@ -162,3 +162,78 @@ const initialConfig = simpleIterateConfig(simModStructure);
 console.log("Generated Input Config:", initialConfig);
 
 // simpleIterateConfig(simModStructure);
+
+{
+    "cpu": {
+      "cpu_types": {
+        "selected": "in_order_pipeline",
+        "test": {
+          "selected": 1
+        },
+        "in_order_pipeline": {
+          "selected": "magnitude",
+          "magnitude": {
+            "enabled": true,
+            "selected": 10
+          },
+          "type": {
+            "selected": "fast"
+          }
+        },
+        "out_of_order_pipeline": {
+          "selected": 40
+        }
+      }
+    },
+    "branch_predictors": {
+      "enabled": true,
+      "selected": "TWO_BIT_LOCAL"
+    },
+    "cache": {
+      "size": {
+        "enabled": true,
+        "selected": "sub_size",
+        "sub_size": {
+          "selected": 10
+        },
+        "super_size": {
+          "selected": 100
+        },
+        "peas": {
+          "selected": 10
+        },
+        "peas_2": {
+          "selected": 10
+        }
+      },
+      "associativity": {
+        "selected": 1
+      },
+      "tag_latency": {
+        "selected": 0
+      },
+      "response_latency": {
+        "selected": 0
+      },
+      "number_of_mshrs": {
+        "selected": 0
+      },
+      "targets_of_mshrs": {
+        "selected": 0
+      }
+    },
+    "prefetchers": {
+      "enabled": true,
+      "selected": "ACCESS_MAP_PATTERN_MATCHING"
+    },
+    "policies": {
+      "replacement_policies": {
+        "selected": "BASE"
+      },
+      "coherence_policies": {
+        "selected": "NOT_COHERENT"
+      }
+    },
+    "id": "51rl945r4v6",
+    "name": ""
+  }

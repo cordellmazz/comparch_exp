@@ -71,7 +71,7 @@ function getValueInConfig(config, path) {
 
         return currentSegment;
     } catch (e) {
-        console.log(e);
+        console.log("Config value error, likely input and structure mismatch:", e);
     }
 }
 
@@ -125,7 +125,7 @@ const renderSimModule = (structure, keyPrefix = "", config, updateConfig) => {
                 }
                 return acc;
             }, {});
-            const configValueForControl = getValueInConfig(config, configPath + ".selected");
+            const configValueForControl = getValueInConfig(config, configPath + ".selected"); // problem line regarding input prefix
             // problem child, should be a terminal component
             const controlComponent = generateTerminalComponent(
                 ComponentKey.toLowerCase(),
@@ -178,8 +178,8 @@ const renderSimModule = (structure, keyPrefix = "", config, updateConfig) => {
     });
 };
 
-const RecursiveStructure = ({ structure = simModStructure, config, updateConfig }) => {
-    return <Container>{renderSimModule(structure, "", config, updateConfig)}</Container>;
+const RecursiveStructure = ({ structure = simModStructure, prefix = "", config, updateConfig }) => {
+    return <Container>{renderSimModule(structure, prefix, config, updateConfig)}</Container>;
 };
 
 export default RecursiveStructure;

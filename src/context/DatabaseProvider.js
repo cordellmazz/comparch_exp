@@ -5,12 +5,15 @@ import * as Realm from "realm-web";
 const DatabaseContext = createContext({ state: {}, actions: {} });
 
 // const app = new Realm.App({ id: atlasConfig.appId });
-const app = Realm.getApp(atlasConfig.appId);
 
 // reminder to bulk delete anon users
-
+// REMINDER TO CHANGE APP SERVICE RULES ON PROJECT1 TO SEARCH AND READ ONLY
+/**
+ * React Component that connects the user to the database
+ */
 const DatabaseProvider = ({ children }) => {
     const [loaded, setLoaded] = useState(false);
+    const [app, setApp] = useState(Realm.getApp(atlasConfig.appId));
 
     const [user, setUser] = useState(null);
     // const [mongodb, setMongodb] = useState(null);
@@ -18,20 +21,26 @@ const DatabaseProvider = ({ children }) => {
 
     // internal functions
     async function loginAnonymously() {
-        try {
-            const credentials = Realm.Credentials.anonymous();
-            await app.logIn(credentials);
-            setUser(app.currentUser);
-            setLoaded(true);
-            console.log("Successfully logged in anonymously!");
-        } catch (error) {
-            console.error("Failed to log in anonymously.", error);
-        }
+        // if no local storage credentials, create new credentials and store in local storage
+        let credentials = Realm.Credentials.anonymous();
+        const res = await app.logIn(credentials);
+        setUser(app.currentUser);
+        setLoaded(true);
+        console.log("Successfully logged in anonymously!");
     }
+
+    const cleanLocalStorageOfCredentials = () => {
+        // get realm-web:app(atlasConfig.appId):userIds from local storage
+        const userIds = JSON.parse(localStorage.getItem(`realm-web:app(${atlasConfig.appId}):userIds`));
+        console.log("userIds", userIds);
+        // for each userId, remove realm-web:token:app(atlasConfig.appId):<userId>
+    };
 
     const logout = async () => {
         try {
+            //
             await app.currentUser?.logOut();
+            cleanLocalStorageOfCredentials();
             setUser(null);
             console.log("Successfully logged out!");
         } catch (error) {
@@ -43,12 +52,15 @@ const DatabaseProvider = ({ children }) => {
         // see if there are anonymous credentials in local storage, if not log in anonymously and store credentials in local storage
         if (!app.currentUser) {
             loginAnonymously();
+        } else {
+            console.log("User already logged in");
+            setUser(app.currentUser);
+            setLoaded(true);
         }
 
-        return () => {
-            console.log("cleanup");
-            logout();
-        };
+        // return () => {
+        //     logout();
+        // };
     }, []);
 
     async function testFunc(text) {
@@ -58,12 +70,17 @@ const DatabaseProvider = ({ children }) => {
 
     async function findByParams(searchDict) {
         console.log("runnings");
-        try {
-            const result = await user.functions.findByParams(searchDict);
-            console.log(result);
-            return result;
-        } catch (error) {
-            console.error("Document could not be found", error);
+        console.log(searchDict);
+        if (loaded) {
+            try {
+                const result = await user.functions.findByParams(searchDict);
+                console.log(result);
+                return result;
+            } catch (error) {
+                console.error("Document could not be found", error);
+            }
+        } else {
+            console.error("Database not loaded");
         }
     }
 
@@ -75,9 +92,11 @@ const DatabaseProvider = ({ children }) => {
      * @returns all documents that fall within the given range
      */
     async function queryByRange(parameterName, range) {
-        const result = await user.functions.queryByRange(parameterName, range);
-        console.log(result);
-        // return result;
+        if (loaded) {
+            const result = await user.functions.queryByRange(parameterName, range);
+            console.log(result);
+            return result;
+        }
     }
 
     /**
@@ -87,18 +106,30 @@ const DatabaseProvider = ({ children }) => {
      * Expected structure {"parameterName": {"type": "range" or "list", "start": beginningVal, "end": endVal, "list": ["val1", "val2", ...] or [1, 2, 4], ...}
      */
     async function filterAndSweepRuns(staticParams, sweepParams) {
-        const result = await user.functions.filterAndSweepRuns(staticParams, sweepParams);
-        console.log(result);
+        try {
+            if (loaded) {
+                const result = await user.functions.filterAndSweepRuns(staticParams, sweepParams);
+                console.log(result);
+                return result;
+            } else {
+                return -1;
+            }
+        } catch (error) {
+            console.error("Error in filter and sweep request", error);
+        }
     }
 
     async function addRun(run) {
-        const result = await user.functions.addRun(run);
-        console.log(result);
+        if (loaded) {
+            const result = await user.functions.addRun(run);
+            console.log(result);
+        }
     }
 
     const exportValues = {
         findByParams,
         testFunc,
+        filterAndSweepRuns,
         addRun,
         loaded,
     };

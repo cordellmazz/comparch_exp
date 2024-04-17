@@ -13,6 +13,7 @@ const ButtonContainer = styled.div`
 const ButtonInput = styled.button`
     flex-grow: 1;
     margin-right: 5px;
+    cursor: pointer;
 `;
 
 const ButtonLabel = styled.label`

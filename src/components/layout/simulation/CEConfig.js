@@ -101,144 +101,355 @@ const CoherencePolicies = {
  * 5. If an input is optional, set the optional key to true. This will add an enabled key to the input configuration.
  * 6. The input types for the options are dropdown and dsliders. This value is used in the ConfigInput component.
  */
+// const simModStructure = {
+//     CPU: {
+//         title: "CPU",
+//         options: {
+//             CPU_TYPES: {
+//                 title: "CPU Types",
+//                 dynamic: true,
+//                 type: "dropdown",
+//                 options: {
+//                     TEST: {
+//                         title: "Test",
+//                         // dependent: false, // should be inferred
+//                         type: "dsliders",
+//                         options: [1, 2, 3],
+//                     },
+//                     IN_ORDER_PIPELINE: {
+//                         title: "In Order Pipeline",
+//                         dependent: true,
+//                         dynamic: true,
+//                         type: "dropdown",
+//                         options: {
+//                             MAGNITUDE: {
+//                                 title: "Magnitude",
+//                                 type: "dsliders",
+//                                 dependent: true,
+//                                 optional: true,
+//                                 options: CpuTypes.In_order_pipeline.magnitude,
+//                             },
+//                             TYPE: {
+//                                 title: "Type",
+//                                 type: "dropdown",
+//                                 dependent: true,
+//                                 options: CpuTypes.In_order_pipeline.type,
+//                             },
+//                         },
+//                     },
+//                     OUT_OF_ORDER_PIPELINE: {
+//                         title: "Out of Order Pipeline",
+//                         dependent: true,
+//                         type: "dsliders",
+//                         options: CpuTypes.Out_of_order_pipeline,
+//                     },
+//                 },
+//             },
+//         },
+//     },
+//     BRANCH_PREDICTORS: {
+//         title: "Branch Predictors",
+//         type: "dropdown",
+//         optional: true,
+//         options: BranchPredictors,
+//     },
+//     CACHE: {
+//         title: "Cache",
+//         options: {
+//             SIZE: {
+//                 title: "Size",
+//                 dynamic: true,
+//                 optional: true,
+//                 type: "dropdown",
+//                 options: {
+//                     SUB_SIZE: {
+//                         title: "sub size",
+//                         type: "dropdown",
+//                         dependent: true,
+//                         options: [10, 20, 30, 40],
+//                     },
+//                     SUPER_SIZE: {
+//                         title: "super size",
+//                         type: "dropdown",
+//                         dependent: true,
+//                         options: [100, 200, 300, 400],
+//                     },
+//                     PEAS: {
+//                         title: "peas",
+//                         type: "dropdown",
+//                         // dependent: false,
+//                         options: [10, 20, 30, 40],
+//                     },
+//                     PEAS_2: {
+//                         title: "peas 2",
+//                         type: "dropdown",
+//                         // dependent: false,
+//                         options: [10, 20, 30, 40],
+//                     },
+//                 },
+//             },
+//             ASSOCIATIVITY: {
+//                 title: "Associativity",
+//                 type: "dsliders",
+//                 options: Cache.Associativity,
+//             },
+//             TAG_LATENCY: {
+//                 title: "Tag Latency",
+//                 type: "dsliders",
+//                 options: Cache.Tag_latency,
+//             },
+//             RESPONSE_LATENCY: {
+//                 title: "Response Latency",
+//                 type: "dsliders",
+//                 options: Cache.Response_latency,
+//             },
+//             NUMBER_OF_MSHRS: {
+//                 title: "Number of MSHRs",
+//                 type: "dsliders",
+//                 options: Cache.Number_of_MSHRs,
+//             },
+//             TARGETS_OF_MSHRS: {
+//                 title: "Targets of MSHRs",
+//                 type: "dsliders",
+//                 options: Cache.Targets_of_MSHRs,
+//             },
+//         },
+//     },
+//     PREFETCHERS: {
+//         title: "Prefetchers",
+//         type: "dropdown",
+//         optional: true,
+//         options: Prefetchers,
+//     },
+//     POLICIES: {
+//         title: "Policies",
+//         options: {
+//             REPLACEMENT_POLICIES: {
+//                 title: "Replacement Policies",
+//                 type: "dropdown",
+//                 options: ReplacementPolicies,
+//             },
+//             COHERENCE_POLICIES: {
+//                 title: "Coherence Policies",
+//                 type: "dropdown",
+//                 options: CoherencePolicies,
+//             },
+//         },
+//     },
+// };
+
+// function that checks the depth of a JSON object by recursively traversing it
+
 const simModStructure = {
-    CPU: {
-        title: "CPU",
-        options: {
-            CPU_TYPES: {
-                title: "CPU Types",
-                dynamic: true,
-                type: "dropdown",
-                options: {
-                    TEST: {
-                        title: "Test",
-                        // dependent: false, // should be inferred
-                        type: "dsliders",
-                        options: [1, 2, 3],
-                    },
-                    IN_ORDER_PIPELINE: {
-                        title: "In Order Pipeline",
-                        dependent: true,
-                        dynamic: true,
-                        type: "dropdown",
-                        options: {
-                            MAGNITUDE: {
-                                title: "Magnitude",
-                                type: "dsliders",
-                                dependent: true,
-                                optional: true,
-                                options: CpuTypes.In_order_pipeline.magnitude,
-                            },
-                            TYPE: {
-                                title: "Type",
-                                type: "dropdown",
-                                dependent: true,
-                                options: CpuTypes.In_order_pipeline.type,
-                            },
-                        },
-                    },
-                    OUT_OF_ORDER_PIPELINE: {
-                        title: "Out of Order Pipeline",
-                        dependent: true,
-                        type: "dsliders",
-                        options: CpuTypes.Out_of_order_pipeline,
-                    },
-                },
-            },
-        },
+    L1D_SIZE: {
+        title: "L1D Size",
+        type: "dsliders",
+        options: ["16kB", "32kB", "64kB", "128kB"],
     },
-    BRANCH_PREDICTORS: {
-        title: "Branch Predictors",
+    L1I_SIZE: {
+        title: "L1I Size",
+        type: "dsliders",
+        options: ["16kB", "32kB", "64kB", "128kB"],
+    },
+    L2_SIZE: {
+        title: "L2 Size",
+        type: "dsliders",
+        options: ["256kB", "512kB", "1024kB", "2048kB"],
+    },
+    MEMORY_TYPE: {
+        title: "Memory Type",
         type: "dropdown",
-        optional: true,
-        options: BranchPredictors,
+        options: ["DualChannelDDR4_2400"],
     },
-    CACHE: {
-        title: "Cache",
-        options: {
-            SIZE: {
-                title: "Size",
-                dynamic: true,
-                optional: true,
-                type: "dropdown",
-                options: {
-                    SUB_SIZE: {
-                        title: "sub size",
-                        type: "dropdown",
-                        dependent: true,
-                        options: [10, 20, 30, 40],
-                    },
-                    SUPER_SIZE: {
-                        title: "super size",
-                        type: "dropdown",
-                        dependent: true,
-                        options: [100, 200, 300, 400],
-                    },
-                    PEAS: {
-                        title: "peas",
-                        type: "dropdown",
-                        // dependent: false,
-                        options: [10, 20, 30, 40],
-                    },
-                    PEAS_2: {
-                        title: "peas 2",
-                        type: "dropdown",
-                        // dependent: false,
-                        options: [10, 20, 30, 40],
-                    },
-                },
-            },
-            ASSOCIATIVITY: {
-                title: "Associativity",
-                type: "dsliders",
-                options: Cache.Associativity,
-            },
-            TAG_LATENCY: {
-                title: "Tag Latency",
-                type: "dsliders",
-                options: Cache.Tag_latency,
-            },
-            RESPONSE_LATENCY: {
-                title: "Response Latency",
-                type: "dsliders",
-                options: Cache.Response_latency,
-            },
-            NUMBER_OF_MSHRS: {
-                title: "Number of MSHRs",
-                type: "dsliders",
-                options: Cache.Number_of_MSHRs,
-            },
-            TARGETS_OF_MSHRS: {
-                title: "Targets of MSHRs",
-                type: "dsliders",
-                options: Cache.Targets_of_MSHRs,
-            },
-        },
+    MEMORY_SIZE: {
+        title: "Memory Size",
+        type: "dsliders",
+        options: ["2GB"],
     },
-    PREFETCHERS: {
-        title: "Prefetchers",
+    CPU_TYPE: {
+        title: "CPU Type",
         type: "dropdown",
-        optional: true,
-        options: Prefetchers,
+        options: ["minor", "o3"],
     },
-    POLICIES: {
-        title: "Policies",
+    ISA: {
+        title: "ISA",
+        type: "dropdown",
+        options: ["X86"],
+    },
+    NUM_CORES: {
+        title: "Number of Cores",
+        type: "dsliders",
+        options: ["1"],
+    },
+    BOARD_CLK_FREQ: {
+        title: "Board Clock Frequency",
+        type: "dropdown",
+        options: ["3GHz"],
+    },
+};
+
+const metricOptions = {
+    GROUPS: {
+        title: "",
+        dynamic: true,
+        type: "dropdown",
         options: {
-            REPLACEMENT_POLICIES: {
-                title: "Replacement Policies",
+            SIMULATION: {
+                title: "Simulation metrics",
                 type: "dropdown",
-                options: ReplacementPolicies,
+                dependent: true,
+                options: ["simSeconds", "simTicks", "finalTick", "simFreq", "hostSeconds", "hostTickRate"],
             },
-            COHERENCE_POLICIES: {
-                title: "Coherence Policies",
+            L1: {
+                title: "L1 parameters",
                 type: "dropdown",
-                options: CoherencePolicies,
+                dependent: true,
+                options: [
+                    "L1doverallHits",
+                    "L1doverallMisses",
+                    "L1doverallAccesses",
+                    "L1doverallMissRate",
+                    "L1doverallMshrHits",
+                    "L1doverallMshrMisses",
+                    "L1doverallMshrMissRate",
+                    "L1dreplacements",
+                    "L1ioverallHits",
+                    "L1ioverallAccesses",
+                ],
+            },
+            L2: {
+                title: "L2 parameters",
+                type: "dropdown",
+                dependent: true,
+                options: [
+                    "L2overallHits",
+                    "L2overallMisses",
+                    "L2overallAccesses",
+                    "L2overallMissRate",
+                    "L2overallMshrHits",
+                    "L2overallMshrMisses",
+                    "L2overallMshrMissRate",
+                    "L2replacements",
+                ],
+            },
+            MEMORY: {
+                title: "Memory parameters",
+                type: "dropdown",
+                dependent: true,
+                options: [
+                    "ctrl0readReqs",
+                    "ctrl0writeReqs",
+                    "ctrl0totQLat",
+                    "ctrl0totBusLat",
+                    "ctrl0totMemAccLat",
+                    "ctrl0avgQLat",
+                    "ctrl0avgBusLat",
+                    "ctrl0avgMemAccLat",
+                    "ctrl0readRowHits",
+                    "ctrl0writeRowHits",
+                    "ctrl0readRowHitRate",
+                    "ctrl0writeRowHitRate",
+                    "ctrl0pageHitRate",
+                    "ctrl1readReqs",
+                    "ctrl1writeReqs",
+                    "ctrl1totQLat",
+                    "ctrl1totBusLat",
+                    "ctrl1totMemAccLat",
+                    "ctrl1avgQLat",
+                    "ctrl1avgBusLat",
+                    "ctrl1avgMemAccLat",
+                    "ctrl1readRowHits",
+                    "ctrl1writeRowHits",
+                    "ctrl1readRowHitRate",
+                    "ctrl1writeRowHitRate",
+                    "ctrl1pageHitRate",
+                ],
+            },
+            PROCESSOR: {
+                title: "Processor parameters",
+                type: "dropdown",
+                dependent: true,
+                options: ["numCycles", "cpi", "ipc"],
+            },
+            BRANCH_PREDICTION: {
+                title: "Branch Prediction parameters",
+                type: "dropdown",
+                dependent: true,
+                options: [
+                    "lookups_0",
+                    "squashes_0",
+                    "corrected_0",
+                    "committed_0",
+                    "mispredicted_0",
+                    "targetWrong_0",
+                    "condPredicted",
+                    "condPredictedTaken",
+                    "condIncorrect",
+                    "condIncorrectTaken",
+                    "predTakenBTBMiss",
+                    "BTBHits",
+                    "BTBHitRate",
+                    "BTBMisses",
+                    "BTBMissRate",
+                    "BTBWriteAccesses",
+                    "indirectHits",
+                    "indirectMisses",
+                    "indirectMispredicted",
+                    "indirectLookups",
+                ],
+            },
+            CONSTRUCTION_TYPES: {
+                title: "Construction types",
+                type: "dropdown",
+                dependent: true,
+                options: ["numInsts", "numOps", "No_Op_Class", "IntAlu"],
+            },
+            TLB: {
+                title: "Translation Look-aside Buffer",
+                type: "dropdown",
+                dependent: true,
+                options: ["rdAccesses", "wrAccesses", "wrMisses", "rdMisses"],
+            },
+            LSQ: {
+                title: "Load Store Queue",
+                type: "dropdown",
+                dependent: true,
+                options: [
+                    "forwLoads",
+                    "squashedLoads",
+                    "ignoredResponses",
+                    "squashedStores",
+                    "memOrderViolations",
+                    "rescheduledLoads",
+                    "blockedByCache",
+                ],
+            },
+
+            RENAMING: {
+                title: "Renaming",
+                type: "dropdown",
+                dependent: true,
+                options: [
+                    "squashCycles",
+                    "idleCycles",
+                    "blockCycles",
+                    "serializeStallCycles",
+                    "runCycles",
+                    "unblockCycles",
+                    "renamedInsts",
+                    "ROBFullEvents",
+                    "IQFullEvents",
+                    "LQFullEvents",
+                    "SQFullEvents",
+                    "RenamedOperands",
+                    "robReads",
+                    "robWrites",
+                ],
             },
         },
     },
 };
 
-// function that checks the depth of a JSON object by recursively traversing it
 /**
  * Gets the depth of a JSON object.
  *
@@ -259,6 +470,7 @@ function getDepth(obj) {
     }
     return depth + 1;
 }
+
 /**
  * Gets the dependent options for a given set of options.
  *
@@ -389,6 +601,54 @@ function getOrCreateConfigPath(config, path) {
     return currentSegment;
 }
 
+// function findSelected(obj, prevKey = "") {
+//     let retDict = {}; // dict of all selected values with their keys
+
+//     // for each key-value pair in the object
+//     Object.entries(obj).forEach(([key, value]) => {
+//         if (typeof value === "object" && !value.selected) {
+//             // if current value is an object and does nto have a selected key, call findDeepestSelected
+//             retDict = { ...retDict, ...findDeepestSelected(value, key) };
+//         } else {
+//             if (typeof value === "object") {
+//                 // if the value of the object at the selected key is an object, call findDeepestSelected
+//                 retDict = { ...retDict, ...findDeepestSelected(value, key) };
+//             } else {
+//                 // if there is no object at the selected key, return the value of selected
+//                 // if the object is enabled or does not have an enabled key, add it to the return dictionary
+//                 if (obj.enabled === undefined || obj.enabled) {
+//                     retDict[prevKey] = value;
+//                 }
+//             }
+//         }
+//     });
+//     return retDict;
+// }
+
+function findSelected(obj, prevKey = "") {
+    let retDict = {};
+    // if the object has a selected key call find selected on the value of the selected key
+    if (obj.selected) {
+        console.log("obj", obj);
+        if (typeof obj.selected !== "number") {
+            if (obj[obj.selected] === undefined && obj[obj.selected.toLowerCase()] === undefined) {
+                retDict[prevKey] = obj.selected;
+            } else {
+                retDict = { ...retDict, ...findSelected(obj[obj.selected.toLowerCase()], obj.selected) };
+            }
+        } else {
+            retDict[prevKey] = obj.selected;
+        }
+    } else {
+        // if the object does not have a selected key, call findSelected on all values
+        Object.entries(obj).forEach(([key, value]) => {
+            retDict = { ...retDict, ...findSelected(value, key) };
+        });
+    }
+
+    return retDict;
+}
+
 const DefaultConfig = processConfig(simModStructure);
 // store default config in local storage
 if (localStorage.getItem("defaultConfig") === null) {
@@ -406,6 +666,8 @@ if (localStorage.getItem("defaultConfig") === null) {
 }
 // console.log("Updated Input Configuration with Dynamic Selections:", DefaultConfig);
 
+const DefaultMetricsConfig = processConfig(metricOptions);
+
 export {
     ParameterTypes,
     ParameterOptional,
@@ -416,5 +678,309 @@ export {
     ReplacementPolicies,
     CoherencePolicies,
     DefaultConfig,
+    DefaultMetricsConfig,
     simModStructure,
+    metricOptions,
+    findSelected,
+};
+
+/**
+ * l1d_size
+ * l1i_size
+ * l2_size
+ * memory_type
+ * memory_size
+ * cpu_type
+ * isa
+ * num_cores
+ * board_clk_freq
+ */
+
+const exampleDoc = {
+    _id: { $oid: "66147cd41cc614b221aa639a" },
+    // configs
+    Name: "50w_minor_16l1_256l2",
+    l1d_size: "16kB",
+    l1i_size: "16kB",
+    l2_size: "256kB",
+    memory_type: "DualChannelDDR4_2400",
+    memory_size: "2GB",
+    cpu_type: "minor",
+    isa: "X86",
+    num_cores: "1",
+    board_clk_freq: "3GHz",
+
+    // sim stats
+    simSeconds: "0.243133",
+    simTicks: "243133290666",
+    finalTick: "2161564215390",
+    simFreq: "1000000000000",
+    hostSeconds: "344.79",
+    hostTickRate: "705165938",
+    hostMemory: "2235716",
+    simOps: "258175356",
+    hostInstRate: "435049",
+    hostOpRate: "748793",
+    L1doverallHits: "50635994",
+    L1doverallMisses: "5272496",
+    L1doverallAccesses: "55908490",
+    L1doverallMissRate: "0.094306",
+    L1doverallMshrHits: "474425",
+    L1doverallMshrMisses: "5700612",
+    L1doverallMshrMissRate: "0.101963",
+    L1dreplacements: "5700612",
+    L1ioverallHits: "45696583",
+    L1ioverallAccesses: "45696583",
+    L2overallHits: "2396180",
+    L2overallMisses: "3304432",
+    L2overallAccesses: "5700612",
+    L2overallMissRate: "0.579663",
+    L2overallMshrHits: "9758",
+    L2overallMshrMisses: "3348299",
+    L2overallMshrMissRate: "0.587358",
+    L2replacements: "3349332",
+    ctrl0readReqs: "1675439",
+    ctrl0writeReqs: "118585",
+    ctrl0totQLat: "23873072635",
+    ctrl0totBusLat: "5481403228",
+    ctrl0totMemAccLat: "52648794503",
+    ctrl0avgQLat: "14511.81",
+    ctrl0avgBusLat: "3332.00",
+    ctrl0avgMemAccLat: "32003.81",
+    ctrl0readRowHits: "847432",
+    ctrl0writeRowHits: "91383",
+    ctrl0readRowHitRate: "51.51",
+    ctrl0writeRowHitRate: "79.16",
+    ctrl0pageHitRate: "53.33",
+    ctrl1readReqs: "1672860",
+    ctrl1writeReqs: "117732",
+    ctrl1totQLat: "24243296447",
+    ctrl1totBusLat: "5472773348",
+    ctrl1totMemAccLat: "52973714035",
+    ctrl1avgQLat: "14760.10",
+    ctrl1avgBusLat: "3332.00",
+    ctrl1avgMemAccLat: "32252.10",
+    ctrl1readRowHits: "848486",
+    ctrl1writeRowHits: "91514",
+    ctrl1readRowHitRate: "51.66",
+    ctrl1writeRowHitRate: "79.83",
+    ctrl1pageHitRate: "53.50",
+    numCycles: "730130002",
+    cpi: "7.301300",
+    ipc: "0.136962",
+    lookups_0: "0",
+    squashes_0: "0",
+    corrected_0: "0",
+    committed_0: "0",
+    mispredicted_0: "0",
+    targetWrong_0: "0",
+    condPredicted: "0",
+    condPredictedTaken: "0",
+    condIncorrect: "0",
+    predTakenBTBMiss: "0",
+    NotTakenMispredicted: "0",
+    TakenMispredicted: "0",
+    BTBLookups: "0",
+    BTBUpdates: "0",
+    BTBHits: "0",
+    BTBHitRatio: "nan",
+    BTBMispredicted: "0",
+    indirectLookups: "0",
+    indirectHits: "0",
+    indirectMisses: "0",
+    indirectMispredicted: "0",
+    numInsts: "100000000",
+    numOps: "172001476",
+    branchMispredicts: null,
+    SINo_OpClass: null,
+    SIIntAlu: null,
+    SIIntMult: null,
+    SIIntDiv: null,
+    SIFloatAdd: null,
+    SIFloatCmp: null,
+    SIFloatCvt: null,
+    SIFloatMult: null,
+    SIFloatMultAcc: null,
+    SIFloatDiv: null,
+    SIFloatMisc: null,
+    SIFloatSqrt: null,
+    SISimdAdd: null,
+    SISimdAddAcc: null,
+    SISimdAlu: null,
+    SISimdCmp: null,
+    SISimdCvt: null,
+    SISimdMisc: null,
+    SISimdMult: null,
+    SISimdMultAcc: null,
+    SISimdShift: null,
+    SISimdShiftAcc: null,
+    SISimdDiv: null,
+    SISimdSqrt: null,
+    SISimdFloatAdd: null,
+    SISimdFloatAlu: null,
+    SISimdFloatCmp: null,
+    SISimdFloatCvt: null,
+    SISimdFloatDiv: null,
+    SISimdFloatMisc: null,
+    SISimdFloatMult: null,
+    SISimdFloatMultAcc: null,
+    SISimdFloatMatMultAcc: null,
+    SISimdFloatSqrt: null,
+    SISimdReduceAdd: null,
+    SISimdReduceAlu: null,
+    SISimdReduceCmp: null,
+    SISimdFloatReduceAdd: null,
+    SISimdFloatReduceCmp: null,
+    SISimdAes: null,
+    SISimdAesMix: null,
+    SISimdSha1Hash: null,
+    SISimdSha1Hash2: null,
+    SISimdSha256Hash: null,
+    SISimdSha256Hash2: null,
+    SISimdShaSigma2: null,
+    SISimdShaSigma3: null,
+    SISimdPredAlu: null,
+    SIMatrix: null,
+    SIMatrixMov: null,
+    SIMatrixOP: null,
+    SIMemRead: null,
+    SIMemWrite: null,
+    SIFloatMemRead: null,
+    SIFloatMemWrite: null,
+    SIIprAccess: null,
+    SIInstPrefetch: null,
+    SIVectorUnitStrideLoad: null,
+    SIVectorUnitStrideStore: null,
+    SIVectorUnitStrideMaskLoad: null,
+    SIVectorUnitStrideMaskStore: null,
+    SIVectorStridedLoad: null,
+    SIVectorStridedStore: null,
+    SIVectorIndexedLoad: null,
+    SIVectorIndexedStore: null,
+    SIVectorUnitStrideFaultOnlyFirstLoad: null,
+    SIVectorWholeRegisterLoad: null,
+    SIVectorWholeRegisterStore: null,
+    SIVectorIntegerArith: null,
+    SIVectorFloatArith: null,
+    SIVectorFloatConvert: null,
+    SIVectorIntegerReduce: null,
+    SIVectorFloatReduce: null,
+    SIVectorMisc: null,
+    SIVectorIntegerExtension: null,
+    SIVectorConfig: null,
+    SItotal: null,
+    CNo_OpClass: null,
+    CIntAlu: null,
+    CIntMult: null,
+    CIntDiv: null,
+    CFloatAdd: null,
+    CFloatCmp: null,
+    CFloatCvt: null,
+    CFloatMult: null,
+    CFloatMultAcc: null,
+    CFloatDiv: null,
+    CFloatMisc: null,
+    CFloatSqrt: null,
+    CSimdAdd: null,
+    CSimdAddAcc: null,
+    CSimdAlu: null,
+    CSimdCmp: null,
+    CSimdCvt: null,
+    CSimdMisc: null,
+    CSimdMult: null,
+    CSimdMultAcc: null,
+    CSimdShift: null,
+    CSimdShiftAcc: null,
+    CSimdDiv: null,
+    CSimdSqrt: null,
+    CSimdFloatAdd: null,
+    CSimdFloatAlu: null,
+    CSimdFloatCmp: null,
+    CSimdFloatCvt: null,
+    CSimdFloatDiv: null,
+    CSimdFloatMisc: null,
+    CSimdFloatMult: null,
+    CimdFloatMultAcc: null,
+    CSimdFloatMatMultAcc: null,
+    CSimdFloatSqrt: null,
+    CSimdReduceAdd: null,
+    CSimdReduceAlu: null,
+    CSimdReduceCmp: null,
+    CSimdFloatReduceAdd: null,
+    CSimdFloatReduceCmp: null,
+    CSimdAes: null,
+    CSimdAesMix: null,
+    CSimdSha1Hash: null,
+    CSimdSha1Hash2: null,
+    CSimdSha256Hash: null,
+    CSimdSha256Hash2: null,
+    CSimdShaSigma2: null,
+    CSimdShaSigma3: null,
+    CSimdPredAlu: null,
+    CMatrix: null,
+    CMatrixMov: null,
+    CMatrixOP: null,
+    CMemRead: null,
+    CMemWrite: null,
+    CFloatMemRead: null,
+    CFloatMemWrite: null,
+    CIprAccess: null,
+    CInstPrefetch: null,
+    CVectorUnitStrideLoad: null,
+    CVectorUnitStrideStore: null,
+    CVectorUnitStrideMaskLoad: null,
+    CVectorUnitStrideMaskStore: null,
+    CVectorStridedLoad: null,
+    CVectorStridedStore: null,
+    CVectorIndexedLoad: null,
+    CVectorIndexedStore: null,
+    CVectorUnitStrideFaultOnlyFirstLoad: null,
+    CVectorWholeRegisterLoad: null,
+    CVectorWholeRegisterStore: null,
+    CVectorIntegerArith: null,
+    CVectorFloatArith: null,
+    CVectorFloatConvert: null,
+    CVectorIntegerReduce: null,
+    CVectorFloatReduce: null,
+    CVectorMisc: null,
+    CVectorIntegerExtension: null,
+    CVectorConfig: null,
+    Ctotal: null,
+    issueRate: null,
+    fuBusy: null,
+    fuBusyRate: null,
+    numSquashedInsts: null,
+    CSNo_OpClass: "3767688      2.19%      2.19%",
+    CSIntAlu: "123727137     71.93%     74.12%",
+    CSIntMult: "217026      0.13%     74.25%",
+    CSIntDiv: "679078      0.39%     74.65%",
+    CSMemRead: "33551717     19.51%     94.15%",
+    CSMemWrite: "10058830      5.85%    100.00%",
+    CStotal: "172001476",
+    rdAccesses: "47980876",
+    wrAccesses: "10086085",
+    rdMisses: "2374528",
+    wrMisses: "84757",
+    forwLoads: null,
+    squashedLoads: null,
+    ignoredResponses: null,
+    memOrderViolation: null,
+    squashedStores: null,
+    rescheduledLoads: null,
+    blockedByCache: null,
+    LSQtotal: null,
+    squashCycles: null,
+    idleCycles: null,
+    blockCycles: null,
+    serializeStallCycles: null,
+    runCycles: null,
+    unblockCycles: null,
+    renamedInsts: null,
+    ROBFullEvents: null,
+    IQFullEvents: null,
+    LQFullEvents: null,
+    SQFullEvents: null,
+    renamedOperands: null,
+    robReads: null,
+    robWrites: null,
 };

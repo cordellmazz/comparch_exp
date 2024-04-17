@@ -5,7 +5,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const SidebarContainer = styled.div`
-    width: ${(props) => (props.active ? "250px" : "0")};
+    width: ${(props) => (props.active === "true" ? "250px" : "0")};
     height: 100vh;
     background-color: #ffffff;
     transition: 0.3s;
@@ -29,7 +29,7 @@ const SidebarButton = styled.button`
     padding: 10px 15px;
     cursor: pointer;
     position: fixed;
-    left: ${(props) => (props.active ? "212px" : "0")};
+    left: ${(props) => (props.active === "true" ? "212px" : "0")};
     top: 0px;
     transition: 0.3s;
     z-index: 101;
@@ -64,10 +64,10 @@ const Navigation = () => {
 
     return (
         <>
-            <SidebarButton active={active} onClick={toggleActive}>
+            <SidebarButton active={active.toString()} onClick={toggleActive}>
                 <FontAwesomeIcon icon={faBars} />
             </SidebarButton>
-            <SidebarContainer active={active}>
+            <SidebarContainer active={active.toString()}>
                 <MenuItem href="/">Home</MenuItem>
                 <MenuItem href="/example">Simulate</MenuItem>
                 <MenuItem href="/about">About</MenuItem>

@@ -49,7 +49,6 @@ const CEDropdown = ({ width, height, value, setValue, title = "", options }) => 
     const processedOptions = normalizeOptions();
 
     const handleChange = (e) => {
-        console.log("Changing this stupid value, " + e.target.value);
         setValue(e.target.value);
     };
 

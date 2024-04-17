@@ -1,106 +1,34 @@
 // reduced version of simulation module that relies on SimModContainer to provide the config and setConfig functions
 import React, { useState, useEffect } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import ChartBar from "../ChartBar.js";
 import { useDatabase } from "../../../context/DatabaseProvider.js";
 import CEButton from "../../input/CEButton.js";
-import CEDropdown from "../../input/CEDropdown.js";
 import FlexBox from "../structure/FlexBox.js";
 import FlexColumn from "../structure/FlexColumn.js";
 import FlexRow from "../structure/FlexRow.js";
-import * as CEConfig from "./CEConfig.js";
-import CEDiscreteSlider from "../../input/CEDiscreteSlider.js";
 import styled from "styled-components";
 import RecursiveStructure from "../../input/ConfigInput.js";
-
-const slideOutTime = 0.5; // in seconds
-
-// styled div for the sim module sets y position to tob of div
-const SimModDiv = styled.div`
-    position: relative;
-    margin: 10px;
-    border-radius: 10px;
-    border: 1px solid;
-    padding: 10px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-width: 35vw;
-    min-height: 92vh;
-`;
-
-// styled div for the sim module when it is deleted
-const SimModDivAnimated = styled(SimModDiv)`
-    &.slide-out {
-        max-width: 0;
-        min-width: 0;
-        padding: 0;
-        margin-left: 0;
-        margin-right: 0;
-        opacity: 0;
-        overflow: hidden;
-        transition: min-width ${slideOutTime - 0.05}s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out,
-            margin 0.5s ease-out;
-    }
-`;
-
-// styled div for a small gray number marker in the top left of the container that says what number the module is
-const NumberMarker = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: gray;
-    padding: 10px;
-    border-radius: 10px;
-    width: 15px;
-    text-align: center;
-    z-index: 5;
-`;
-
-// styled input for editable title field at the top of the container
-const TitleInput = styled.input`
-    margin: 10px;
-    position: absolute;
-    top: 0;
-    left: 25px;
-    width: 50%;
-    height: 15px;
-    border: none;
-    border-bottom: 1px solid gray;
-    text-align: left;
-    font-size: 1em;
-    z-index: 2;
-    color: gray;
-`;
-
-// styled input at top right that is styled the same as the append button
-const DeleteButton = styled.button`
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 5px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 1px solid black;
-    min-width: 50px;
-    cursor: pointer;
-    background-color: white;
-    color: black;
-
-    z-index: 1;
-
-    transition: 0.14s;
-    &:hover {
-        border: 1px solid #bf5700;
-        background-color: #bf5700;
-        color: white;
-    }
-`;
+import GraphSweepView from "../graphing/GraphSweepView.js";
+import CEDropdown from "../../input/CEDropdown.js";
+import InfoTip from "../InfoTip.js";
+import * as CEConfig from "./CEConfig.js";
+// import all the styled components from SimModDivs.js
+import {
+    RowColSwapContainer,
+    slideOutTime,
+    TextOptions,
+    SimModDivAnimated,
+    NumberMarker,
+    TitleInput,
+    DeleteButton,
+    SelectedMetrics,
+    SweepSelectorContainer,
+} from "./SimModDivs.js";
 
 export function SimMod({ config, setConfig, index, deleteConfig }) {
-    // Graphical function
-    ChartJS.register(ArcElement, Tooltip, Legend);
-    const [chartData, setChartData] = useState({});
-    const { findByParams, addRun, loaded } = useDatabase();
+    // graph data
+    const { findByParams } = useDatabase();
+    const [selectedMetrics, setSelectedMetrics] = useState(config.selected_metrics);
+    const [sweepParameter, setSweepParameter] = useState(config.sweep_parameter || "l1d_size");
 
     // animation
     const [isDeleted, setIsDeleted] = useState(false);
@@ -119,10 +47,9 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
     const [localConfig, setLocalConfig] = useState(config);
 
     // This function handles updating the local config which will then update the global config
-    const updateConfig = (path, value) => {
+    const updateConfig = (path, value, setFunc = setLocalConfig) => {
         path = path.toLowerCase();
-        console.log("Updating config at path: ", path, " with value: ", value);
-        setLocalConfig((origConfig) => {
+        setFunc((origConfig) => {
             const updateAttribute = (obj, keys, val) => {
                 const key = keys[0];
                 if (keys.length === 1) {
@@ -144,37 +71,63 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
         }
     }, [localConfig]);
 
-    // when we query for a new run we should store the search result in a state variable in the SimModContainer
-    function searchForRun() {
-        console.log("Searching for run with the following parameters:");
-        console.log(config);
+    useEffect(() => {
+        // store sweep parameter in config
+        updateConfig("sweep_parameter", sweepParameter);
+    }, [sweepParameter]);
 
-        // const res = findByParams({
-        //     cpuType: config.cpuType,
-        //     branchPredictor: config.branchPredictor,
-        //     cacheSize: config.cache.size,
-        //     cacheAssociativity: config.cache.associativity,
-        //     cacheTagLatency: config.cache.tagLatency,
-        //     cacheDataLatency: config.cache.dataLatency,
-        //     cacheResponseLatency: config.cache.responseLatency,
-        //     cacheNumberOfMshrs: config.cache.numberOfMshrs,
-        //     cacheTargetsOfMshrs: config.cache.targetsOfMshrs,
-        //     prefetcher: config.prefetcher,
-        //     replacementPolicy: config.replacementPolicy,
-        //     coherencePolicy: config.coherencePolicy,
-        // });
-        // // set the chart data to the result of the database query
-        // console.log(res);
-        // setChartData(res.res);
+    // const selectedVals = CEConfig.findDeepestSelected(config.input);
+
+    // data processing from config
+    const [dbData, setDbData] = useState(config.db_data);
+    const { filterAndSweepRuns } = useDatabase();
+    const [metricChoice, setMetricChoice] = useState(CEConfig.DefaultMetricsConfig);
+
+    async function testSweep() {
+        const results = await filterAndSweepRuns(
+            // pass in selected value for every param here, then every possibility for the sweep parameter in the next object
+            { memory_size: "2GB", l1d_size: "16kB", l1i_size: "16kB" }, // for every parameter that is not defined here, it adds another dimension to the graph. So this should probably be mandatory to define every other parameter
+            {
+                l2_size: { type: "list", values: ["256kB", "512kB"] },
+            }
+        );
+        console.log("results", results);
+        setDbData(results);
     }
 
-    useEffect(() => {
-        // console.log(chartData);
-    }, [chartData]);
+    // function getSelectedValue() {
+    //     let currentSelection = metricChoice["groups"]["selected"].toLowerCase();
+    //     let current = metricChoice["groups"][currentSelection];
 
-    const handleDeleteConfig = () => {
-        setIsDeleted(true);
-    };
+    //     while (current) {
+    //         currentSelection = current["selected"];
+    //         current = current[currentSelection.toLowerCase()];
+    //     }
+
+    //     return currentSelection;
+    // }
+
+    function addMetricToSet() {
+        const newSelection = Object.values(CEConfig.findSelected(metricChoice))[0];
+        if (!selectedMetrics.includes(newSelection)) {
+            setSelectedMetrics([...selectedMetrics, newSelection]);
+        }
+    }
+
+    async function getSimulation() {
+        const inputSelections = CEConfig.findSelected(config.input);
+        // filtered selections where its every parameter except the sweep parameter
+        const staticParams = Object.fromEntries(
+            Object.entries(inputSelections).filter(([key, value]) => key !== sweepParameter)
+        );
+        const result = await findByParams(staticParams);
+        // if result is empty array then error
+        if (result.length === 0) {
+            console.error("No results found for given parameters");
+            return;
+        }
+        setDbData(result);
+    }
 
     return (
         <SimModDivAnimated className={isDeleted ? "slide-out" : ""}>
@@ -183,17 +136,62 @@ export function SimMod({ config, setConfig, index, deleteConfig }) {
                 defaultValue={config.name === "" ? `Simulation ${index + 1}` : config.name}
                 onChange={(e) => updateConfig("name", e.target.value)}
             />
-            <DeleteButton onClick={handleDeleteConfig}>remove</DeleteButton>
+            <DeleteButton
+                onClick={() => {
+                    setIsDeleted(true);
+                }}
+            >
+                remove
+            </DeleteButton>
             <FlexBox>
-                <FlexColumn>
-                    <FlexRow>
-                        <ChartBar data={chartData ? chartData : {}} />
-                    </FlexRow>
-                    <FlexColumn>
-                        <RecursiveStructure config={config} updateConfig={updateConfig} />
+                <RowColSwapContainer>
+                    <GraphSweepView
+                        config={config}
+                        updateConfig={updateConfig}
+                        selectedMetrics={selectedMetrics}
+                        sweepParameter={sweepParameter}
+                        dbData={dbData}
+                    />
+                    <FlexColumn align={"left"}>
+                        <RecursiveStructure
+                            structure={CEConfig.metricOptions}
+                            config={metricChoice}
+                            updateConfig={(path, value) => {
+                                updateConfig(path, value, setMetricChoice);
+                            }}
+                        />
+                        <CEButton title={"Add Metric"} func={addMetricToSet} />
+                        <SelectedMetrics>
+                            <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
+                        </SelectedMetrics>
+                        <SweepSelectorContainer>
+                            <FlexRow>
+                                <CEDropdown
+                                    title={"Sweep Metric:"}
+                                    value={sweepParameter}
+                                    setValue={setSweepParameter}
+                                    options={[
+                                        "l1d_size",
+                                        "l1i_size",
+                                        "l2_size",
+                                        "memory_type",
+                                        "memory_size",
+                                        "cpu_type",
+                                        "isa",
+                                        "num_cores",
+                                        "board_clk_freq",
+                                    ]}
+                                />
+                                <InfoTip
+                                    tooltipText={"Select a metric to sweep over (x axis), value will be ignored below."}
+                                    position="left"
+                                />
+                            </FlexRow>
+                        </SweepSelectorContainer>
+                        <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
+                        <CEButton title={"Get Simulation"} func={getSimulation} />
                     </FlexColumn>
-                    <CEButton title={"Update Module"} func={searchForRun} />
-                </FlexColumn>
+                </RowColSwapContainer>
             </FlexBox>
         </SimModDivAnimated>
     );
