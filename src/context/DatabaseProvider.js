@@ -50,13 +50,13 @@ const DatabaseProvider = ({ children }) => {
 
     useEffect(() => {
         // see if there are anonymous credentials in local storage, if not log in anonymously and store credentials in local storage
-        // if (!app.currentUser) {
-        //     loginAnonymously();
-        // } else {
-        //     console.log("User already logged in");
-        //     setUser(app.currentUser);
-        //     setLoaded(true);
-        // }
+        if (!app.currentUser) {
+            loginAnonymously();
+        } else {
+            console.log("User already logged in");
+            setUser(app.currentUser);
+            setLoaded(true);
+        }
         // return () => {
         //     logout();
         // };

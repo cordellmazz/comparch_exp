@@ -282,7 +282,7 @@ const simModStructure = {
         options: ["1"],
     },
     BOARD_CLK_FREQ: {
-        title: "Board Clock Frequency",
+        title: "Board Clock Freq.",
         type: "dropdown",
         options: ["3GHz"],
     },

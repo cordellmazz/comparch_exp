@@ -25,11 +25,12 @@ import {
     ViewTypeSwitcher,
 } from "./SimModDivs.js";
 import GraphDefaultView from "../graphing/GraphDefaultView.js";
+import { toast } from "react-toastify";
 
 export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shiftRight }) {
     // component states
     const [isDeleted, setIsDeleted] = useState(false); // for animation
-    const [viewType, setViewType] = useState("default"); // ["default", "sweep"]
+    const [viewType, setViewType] = useState(config.view_type || "default"); // ["default", "sweep"]
 
     // graph data
     const { findByParams } = useDatabase();
@@ -106,6 +107,10 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
         setDbData(result);
     }
 
+    function notifiyUser() {
+        toast("please");
+    }
+
     return (
         <SimModDivAnimated className={isDeleted ? "slide-out" : ""}>
             <NumberMarker>#{index + 1}</NumberMarker>
@@ -180,6 +185,7 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
 
                         <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
                         <CEButton title={"Get Simulation"} func={getSimulation} />
+                        <CEButton title={"Get Notification"} func={notifiyUser} />
                     </FlexColumn>
                 </RowColSwapContainer>
             </FlexBox>

@@ -55,6 +55,11 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
                     datasets: buildDatasets(),
                 },
                 options: {
+                    responsive: true,
+                    interaction: {
+                        mode: "index",
+                        intersect: false,
+                    },
                     scales: {
                         // y: {
                         //     beginAtZero: true,

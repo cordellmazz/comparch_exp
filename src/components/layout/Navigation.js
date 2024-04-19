@@ -39,8 +39,7 @@ const SidebarButton = styled.button`
     align-items: center;
 
     &:hover {
-        background-color: #ffffff;
-        color: #000000;
+        background-color: #bf5700;
     }
 `;
 
@@ -69,7 +68,7 @@ const Navigation = () => {
             </SidebarButton>
             <SidebarContainer active={active.toString()}>
                 <MenuItem href="/">Home</MenuItem>
-                <MenuItem href="/example">Simulate</MenuItem>
+                <MenuItem href="/">Simulate</MenuItem>
                 <MenuItem href="/about">About</MenuItem>
             </SidebarContainer>
         </>

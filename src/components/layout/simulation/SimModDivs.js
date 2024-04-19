@@ -25,14 +25,15 @@ const SweepSelectorContainer = styled.div`
 
 // styled div for the sim module sets y position to tob of div
 const SimModDiv = styled.div`
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
     position: relative;
     margin: 10px;
     border-radius: 10px;
-    border: 1px solid;
+    border: 1px solid #e0e0e0;
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;
-    min-width: 35vw;
+    min-width: 25vw;
     height: 92vh;
 `;
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Chart, registerables } from "chart.js";
+import { Chart, Interaction, registerables } from "chart.js";
 import styled from "styled-components";
 
 Chart.register(...registerables);
@@ -10,7 +10,13 @@ const GraphSweepViewContainer = styled.div`
     padding: 5%;
 `;
 
-const defaultMetricsToDisplay = ["L1doverallHits", "L1doverallMisses", "L1doverallAccesses"];
+const defaultMetricsToDisplay = [
+    "L1doverallHits",
+    "L1doverallMisses",
+    "L1doverallAccesses",
+    "ctrl0readReqs",
+    "ctrl0writeReqs",
+];
 
 function GraphDefaultView({ config = null, updateConfig, dbData }) {
     const canvasRef = useRef(null);
@@ -34,15 +40,8 @@ function GraphDefaultView({ config = null, updateConfig, dbData }) {
 
         return [
             {
-                label: "Performance Metrics",
+                label: dbData.name || "Simulation Data",
                 data: data,
-                fill: true,
-                backgroundColor: "rgba(255, 99, 132, 0.2)",
-                borderColor: "rgb(255, 99, 132)",
-                pointBackgroundColor: "rgb(255, 99, 132)",
-                pointBorderColor: "#fff",
-                pointHoverBackgroundColor: "#fff",
-                pointHoverBorderColor: "rgb(255, 99, 132)",
             },
         ];
     };
@@ -65,6 +64,11 @@ function GraphDefaultView({ config = null, updateConfig, dbData }) {
                     line: {
                         borderWidth: 3,
                     },
+                },
+                responsive: true,
+                interaction: {
+                    mode: "index",
+                    intersect: false,
                 },
             },
         });

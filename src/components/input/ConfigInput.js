@@ -7,6 +7,7 @@ import * as CEConfig from "../layout/simulation/CEConfig";
 
 const Container = styled.div`
     width: 100%;
+    max-width: 600px;
 `;
 
 const ConditionalHaze = styled(({ isEnabled, ...rest }) => <div {...rest} />)`
