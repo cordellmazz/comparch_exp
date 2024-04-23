@@ -1,5 +1,5 @@
 // reduced version of simulation module that relies on SimModContainer to provide the config and setConfig functions
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDatabase } from "../../../context/DatabaseProvider.js";
 import CEButton from "../../input/CEButton.js";
 import FlexBox from "../structure/FlexBox.js";
@@ -8,7 +8,7 @@ import FlexRow from "../structure/FlexRow.js";
 import RecursiveStructure from "../../input/ConfigInput.js";
 import GraphSweepView from "../graphing/GraphSweepView.js";
 import CEDropdown from "../../input/CEDropdown.js";
-import InfoTip from "../InfoTip.js";
+import ToolTip, { ToolTipWrapper } from "../ToolTip.js";
 import * as CEConfig from "./CEConfig.js";
 // import all the styled components from SimModDivs.js
 import {
@@ -23,11 +23,16 @@ import {
     SweepSelectorContainer,
     ReorderArrows,
     ViewTypeSwitcher,
+    CopyConfigButton,
+    NoteTakingArea,
+    PasteConfigButton,
+    DuplicateConfigButton,
 } from "./SimModDivs.js";
 import GraphDefaultView from "../graphing/GraphDefaultView.js";
 import { toast } from "react-toastify";
+import CELoadingIcon from "../misc/CELoadingIcon.js";
 
-export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shiftRight }) {
+export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shiftRight, duplicateConfig }) {
     // component states
     const [isDeleted, setIsDeleted] = useState(false); // for animation
     const [viewType, setViewType] = useState(config.view_type || "default"); // ["default", "sweep"]
@@ -77,19 +82,26 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
         }
     }, [localConfig]);
 
-    useEffect(() => {
-        // store sweep parameter in config
-        updateConfig("sweep_parameter", sweepParameter);
-    }, [sweepParameter]);
-
     function addMetricToSet() {
         const newSelection = Object.values(CEConfig.findSelected(metricChoice))[0];
         if (!selectedMetrics.includes(newSelection)) {
             setSelectedMetrics([...selectedMetrics, newSelection]);
+        } else {
+            toast.error("Metric already selected!", { autoClose: 1000 });
         }
     }
 
+    function synchronizeWithConfig(clipConfig) {
+        setLocalConfig(clipConfig);
+        setViewType(clipConfig.view_type || "default");
+        setSweepParameter(clipConfig.sweep_parameter || "l1d_size");
+        setSelectedMetrics(clipConfig.selected_metrics || []);
+        setDbData(clipConfig.db_data || []);
+    }
+
+    const [getSimLoading, setGetSimLoading] = useState(false);
     async function getSimulation() {
+        setGetSimLoading(true);
         const inputSelections = CEConfig.findSelected(config.input);
         // filtered selections where its every parameter except the sweep parameter
         let staticParams = inputSelections;
@@ -99,18 +111,16 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
             );
         }
         const result = await findByParams(staticParams);
+        setGetSimLoading(false);
         // if result is empty array then error
         if (result.length === 0) {
             console.error("No results found for given parameters");
+            toast.error("No results found for given parameters!");
             return;
         }
+        toast("Simulation data retrieved!");
         setDbData(result);
     }
-
-    function notifiyUser() {
-        toast("please");
-    }
-
     return (
         <SimModDivAnimated className={isDeleted ? "slide-out" : ""}>
             <NumberMarker>#{index + 1}</NumberMarker>
@@ -127,6 +137,13 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                 remove
             </DeleteButton>
             <ViewTypeSwitcher viewType={viewType} setViewType={setViewType} updateConfig={updateConfig} />
+            <CopyConfigButton config={config} />
+            <PasteConfigButton
+                synchronizeWithConfig={(clipConfig) => {
+                    synchronizeWithConfig(clipConfig);
+                }}
+            />
+            <DuplicateConfigButton config={config} duplicateConfig={duplicateConfig} />
             <FlexBox>
                 <RowColSwapContainer>
                     {viewType === "default" ? (
@@ -172,7 +189,7 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                                                 "board_clk_freq",
                                             ]}
                                         />
-                                        <InfoTip
+                                        <ToolTip
                                             tooltipText={
                                                 "Select a metric to sweep over (x axis), value will be ignored below."
                                             }
@@ -184,8 +201,8 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                         )}
 
                         <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
-                        <CEButton title={"Get Simulation"} func={getSimulation} />
-                        <CEButton title={"Get Notification"} func={notifiyUser} />
+                        {getSimLoading ? <CELoadingIcon /> : <CEButton title={"Get Simulation"} func={getSimulation} />}
+                        <NoteTakingArea notes={config.notes} updateConfig={updateConfig} />
                     </FlexColumn>
                 </RowColSwapContainer>
             </FlexBox>

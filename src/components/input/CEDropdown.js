@@ -5,17 +5,22 @@ const DropdownContainer = styled.div`
     display: flex;
     flex-direction: row;
     margin: 2px;
-    align-items: left;
+    align-items: flex-start;
 `;
 
 const DropdownSelect = styled.select`
     flex-grow: 1;
     margin-right: 5px;
     width: 100%;
+    cursor: pointer;
+    option {
+        cursor: pointer;
+    }
 `;
 
 const DropdownLabel = styled.p`
     width: 50%;
+    font-size: 16px;
     text-align: left;
     justify-content: center;
     margin: 0;

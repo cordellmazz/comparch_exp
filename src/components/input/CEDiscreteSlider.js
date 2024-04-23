@@ -17,6 +17,7 @@ const SliderInput = styled.input`
     flex-grow: 1;
     margin-right: 5px;
     width: 75%;
+    cursor: pointer;
 `;
 
 const ValueDisplay = styled.p`
@@ -27,6 +28,7 @@ const ValueDisplay = styled.p`
 `;
 
 const Label = styled.p`
+    font-size: 16px;
     width: 50%;
     text-align: left;
     justify-content: center;

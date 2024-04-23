@@ -8,6 +8,7 @@ const ButtonContainer = styled.div`
     flex-direction: row;
     margin: 20px;
     align-items: center;
+    cursor: pointer;
 `;
 
 const ButtonInput = styled.button`
@@ -21,6 +22,7 @@ const ButtonLabel = styled.label`
     text-align: center;
     margin: 0;
     padding-top: 2px;
+    cursor: pointer;
 `;
 
 const CEButton = ({ width, height, value, setValue, func, title = "" }) => {

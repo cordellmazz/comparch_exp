@@ -4,8 +4,10 @@ import { SimMod } from "./SimMod.js";
 import * as CEConfig from "./CEConfig.js";
 import FlexRow from "../structure/FlexRow.js";
 import styled from "styled-components";
-import { faAlignJustify, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSave, faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CESaveDialog, { CELoadDialog } from "../../input/CEConfirm.js";
+import { toast } from "react-toastify";
 
 // sim mod container styled div with overflow x scroll, takes up the full width of the screen
 const SimModContainerDiv = styled.div`
@@ -32,7 +34,7 @@ const AppendButton = styled.button`
     background-color: white;
     color: black;
 
-    height: 75%;
+    height: 50%;
 
     transition: 0.14s;
     &:hover {
@@ -43,7 +45,7 @@ const AppendButton = styled.button`
 
 const SaveButton = styled(AppendButton)`
     font-size: 2em;
-    height: 25%;
+    height: 25vh;
     writing-mode: vertical-rl;
     text-orientation: mixed;
     justify-content: center;
@@ -78,6 +80,16 @@ function uniqueID() {
 
 // holds several configs, each of which will be mapped to a simulation module
 function SimModContainer() {
+    // dialog state
+    const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+    const [simSetName, setSimSetName] = useState("");
+    const [loadDialogOpen, setLoadDialogOpen] = useState(false);
+    const [chosenSimSet, setChosenSimSet] = useState(localStorage.getItem("currentSimSet") || "");
+    const [importText, setImportText] = useState("");
+
+    // load simulation sets from local storage
+    const [simSets, setSimSets] = useState(JSON.parse(localStorage.getItem("saves")) || {});
+
     const [defaultConfig] = useState(CEConfig.DefaultConfig);
     const [loaded, setLoaded] = useState(false);
     const [configs, setConfigs] = useState([{ ...defaultConfig, id: uniqueID(), name: "" }]);
@@ -105,6 +117,17 @@ function SimModContainer() {
 
     const deleteConfig = (id) => {
         setConfigs((currentConfigs) => currentConfigs.filter((config) => config.id !== id));
+    };
+
+    // duplicate config function that duplicates a config and inserts it after the original
+    const duplicateConfig = (id) => {
+        const newConfig = configs.find((config) => config.id === id);
+        const newID = uniqueID();
+        const newConfigObj = { ...newConfig, id: newID };
+        const index = configs.findIndex((config) => config.id === id);
+        const newConfigs = [...configs];
+        newConfigs.splice(index + 1, 0, newConfigObj);
+        setConfigs(newConfigs);
     };
 
     const appendNewConfig = () => {
@@ -142,24 +165,174 @@ function SimModContainer() {
         }
     };
 
+    // Functions for saving simulation sets
     // get name of simulation set from user and save it to local storage under a saves dictionary with the name as the key
     const saveState = () => {
-        const name = prompt("Name of simulation set:");
-        if (name) {
+        setSimSetName("");
+        setSaveDialogOpen(true);
+    };
+
+    const saveSimSet = () => {
+        // get saves from local storage
+        // update saves with new simulation set with simSetName as key and configs as value
+        // save updated saves to local storage
+        const saves = JSON.parse(localStorage.getItem("saves")) || {};
+        if (saves[simSetName]) {
+            const overwrite = window.confirm("Overwrite existing save?");
+            if (!overwrite) {
+                setSimSetName("");
+                setSaveDialogOpen(false);
+                return;
+            }
+        }
+        const newSaves = { ...saves, [simSetName]: configs };
+        localStorage.setItem("saves", JSON.stringify(newSaves));
+        localStorage.setItem("currentSimSet", simSetName);
+        setSimSetName("");
+        setChosenSimSet(simSetName);
+        setSaveDialogOpen(false);
+        setSimSets(newSaves);
+        toast("Simulation set saved!", { autoClose: 1000 });
+    };
+
+    const importSimSet = () => {
+        try {
+            const importedSimSet = JSON.parse(importText);
             const saves = JSON.parse(localStorage.getItem("saves")) || {};
-            if (saves[name]) {
+            if (saves[importedSimSet]) {
                 const overwrite = window.confirm("Overwrite existing save?");
                 if (!overwrite) {
+                    setImportText("");
                     return;
                 }
             }
-            saves[name] = configs;
-            localStorage.setItem("saves", JSON.stringify(saves));
+            const simSetName = Object.keys(importedSimSet)[0];
+            const simSetObj = Object.values(importedSimSet)[0];
+            const newSaves = { ...saves, [simSetName]: simSetObj };
+            localStorage.setItem("saves", JSON.stringify(newSaves));
+            setSimSets(newSaves);
+            setImportText("");
+            toast("Simulation set imported!", { autoClose: 1000 });
+        } catch (e) {
+            toast.error("Invalid import text!", { autoClose: 1000 });
         }
+    };
+
+    const cancelSaveSimSet = () => {
+        setSimSetName("");
+        setSaveDialogOpen(false);
+    };
+
+    // functions for loading simulation sets
+    const loadState = () => {
+        if (!simSets || chosenSimSet === "") {
+            const firstSimSet = Object.keys(simSets)[0];
+            setChosenSimSet(firstSimSet);
+            console.log("chosenSimSet", chosenSimSet);
+        }
+        setLoadDialogOpen(true);
+    };
+
+    const loadSimSet = () => {
+        // confirm if user wants to load simulation set
+        if (!chosenSimSet || !simSets[chosenSimSet]) {
+            toast.error("No simulation set chosen!", { autoClose: 1000 });
+            return;
+        }
+        console.log("chosenSimSet", chosenSimSet, simSets[chosenSimSet]);
+
+        const confirmLoad = window.confirm(
+            "Are you sure you want to load this simulation set? Any unsaved changes will be lost."
+        );
+
+        if (!confirmLoad) {
+            return;
+        }
+        // get saves from local storage
+        // get simulation set from saves with chosenSimSet as key
+        // set configs to simulation set
+        const saves = JSON.parse(localStorage.getItem("saves")) || {};
+        const simSet = saves[chosenSimSet];
+        if (!simSet) {
+            toast.error("Simulation set not found!", { autoClose: 1000 });
+            setChosenSimSet("");
+            setLoadDialogOpen(false);
+            return;
+        }
+        // save current sim set name to local storage
+        localStorage.setItem("currentSimSet", chosenSimSet);
+        setConfigs(simSet);
+        setLoadDialogOpen(false);
+        toast("Simulation set loaded!", { autoClose: 1000 });
+    };
+
+    const deleteSimSet = () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this simulation set?");
+        if (!confirmDelete) {
+            return;
+        }
+
+        console.log("delete sim set,", chosenSimSet);
+        let saves = JSON.parse(localStorage.getItem("saves"));
+        if (!saves) {
+            return;
+        }
+        saves = Object.fromEntries(Object.entries(saves).filter(([key, value]) => key !== chosenSimSet));
+        localStorage.setItem("saves", JSON.stringify(saves));
+        setSimSets(saves);
+
+        if (chosenSimSet === localStorage.getItem("currentSimSet")) {
+            const firstSimSet = Object.keys(saves)[0];
+            setChosenSimSet(firstSimSet);
+            if (!firstSimSet) {
+                localStorage.setItem("currentSimSet", "");
+            }
+        }
+    };
+
+    const exportSimSet = () => {
+        console.log("simSets", simSets, chosenSimSet);
+        const simSet = simSets[chosenSimSet];
+        if (!simSet) {
+            toast.error("Simulation set not found!", { autoClose: 1000 });
+            setChosenSimSet("");
+            setLoadDialogOpen(false);
+            return;
+        }
+        navigator.clipboard.writeText(JSON.stringify({ [chosenSimSet]: simSet }));
+        toast("Copied simulation set to clipboard!", { autoClose: 2000 });
+    };
+
+    const cancelLoadSimSet = () => {
+        setLoadDialogOpen(false);
     };
 
     return (
         <>
+            <CESaveDialog
+                isOpen={saveDialogOpen}
+                title="Save Simulation Set"
+                message="name of simulation set:"
+                onConfirm={saveSimSet}
+                onCancel={cancelSaveSimSet}
+                simSetName={simSetName}
+                setSimSetName={setSimSetName}
+                importText={importText}
+                setImportText={setImportText}
+                importSimSet={importSimSet}
+            />
+            <CELoadDialog
+                isOpen={loadDialogOpen}
+                title="Load Simulation Set"
+                message="choose simulation set to load:"
+                onConfirm={loadSimSet}
+                onCancel={cancelLoadSimSet}
+                chosenSimSet={chosenSimSet}
+                setChosenSimSet={setChosenSimSet}
+                options={Object.keys(simSets)}
+                deleteSimSet={deleteSimSet}
+                exportSimSet={exportSimSet}
+            />
             {loaded ? (
                 <SimModContainerDiv>
                     <ButtonContainer>
@@ -169,6 +342,9 @@ function SimModContainer() {
                         </AppendButton>
                         <SaveButton onClick={saveState}>
                             <FontAwesomeIcon icon={faSave} />
+                        </SaveButton>
+                        <SaveButton onClick={loadState}>
+                            <FontAwesomeIcon icon={faShareFromSquare} />
                         </SaveButton>
                     </ButtonContainer>
 
@@ -181,6 +357,7 @@ function SimModContainer() {
                             deleteConfig={() => deleteConfig(config.id)}
                             shiftLeft={() => shiftLeft(index)}
                             shiftRight={() => shiftRight(index)}
+                            duplicateConfig={() => duplicateConfig(config.id)}
                         />
                     ))}
                 </SimModContainerDiv>

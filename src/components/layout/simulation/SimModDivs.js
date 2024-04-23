@@ -1,6 +1,16 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowLeft, faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowRight,
+    faArrowLeft,
+    faToggleOff,
+    faToggleOn,
+    faCopy,
+    faFileImport,
+    faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import ToolTipWrapper from "../ToolTipWrapper";
 
 const slideOutTime = 0.5; // in seconds
 
@@ -25,6 +35,8 @@ const SweepSelectorContainer = styled.div`
 
 // styled div for the sim module sets y position to tob of div
 const SimModDiv = styled.div`
+    // with a white background of opacity .9
+    background-color: rgba(255, 255, 255, 0.8); // white with 0.75 opacity
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
     position: relative;
     margin: 10px;
@@ -33,8 +45,8 @@ const SimModDiv = styled.div`
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;
-    min-width: 25vw;
-    height: 92vh;
+    min-width: max(25vw, 500px);
+    height: 94vh;
 `;
 
 // styled div for the sim module when it is deleted
@@ -73,7 +85,7 @@ const TitleInput = styled.input`
     position: absolute;
     top: 0;
     left: 25px;
-    width: 50%;
+    width: 40%;
     height: 15px;
     border: none;
     border-bottom: 1px solid gray;
@@ -104,11 +116,11 @@ const ShiftArrow = styled.div`
 `;
 
 const ShiftArrowRight = styled(ShiftArrow)`
-    left: calc(50% + 75px);
+    left: calc(40% + 75px);
 `;
 
 const ShiftArrowLeft = styled(ShiftArrow)`
-    left: calc(50% + 45px);
+    left: calc(40% + 45px);
 `;
 
 const ReorderArrows = ({ shiftRight, shiftLeft }) => {
@@ -171,6 +183,7 @@ const Highlighter = styled.div`
     justify-content: flex;
     align-items: center;
     border-radius: 5px;
+    cursor: pointer;
 
     &:hover {
         background-color: #fc4545;
@@ -198,7 +211,7 @@ function TextOptions({ texts, setTexts }) {
             Metrics: &nbsp;
             {texts.map((text, index) => (
                 <Highlighter key={index} onClick={() => removeFunc(text)}>
-                    <p>
+                    <p style={{ fontSize: "16px" }}>
                         {text}
                         {index !== texts.length - 1 ? ",\u00A0" : ""}
                     </p>
@@ -209,7 +222,7 @@ function TextOptions({ texts, setTexts }) {
 }
 
 const TypeToggle = styled(ShiftArrow)`
-    left: calc(50% + 105px);
+    left: calc(40% + 105px);
 `;
 
 // component for switching between viewTypes
@@ -226,6 +239,92 @@ function ViewTypeSwitcher({ viewType, setViewType, updateConfig }) {
     );
 }
 
+const CopyConfigButton = ({ config }) => {
+    // on click copy the config to the clipboard
+    function copyConfig() {
+        navigator.clipboard.writeText(JSON.stringify(config));
+        toast("Copied config to clipboard", { autoClose: 500 });
+    }
+    return (
+        <ShiftArrow onClick={copyConfig} style={{ left: "calc(40% + 140px)" }}>
+            <FontAwesomeIcon icon={faCopy} />
+        </ShiftArrow>
+    );
+};
+
+// generating a new unique id for the config because its the only way to ensure the config rerenders
+function uniqueID() {
+    return Math.random().toString(36).substring(2, 24);
+}
+
+const PasteConfigButton = ({ synchronizeWithConfig }) => {
+    // on click copy the config to the clipboard
+    function pasteConfig() {
+        // get the clipboard text
+        // try to parse it as a json object
+        // if it fails, show a toast message
+        try {
+            navigator.clipboard.readText().then((clipText) => {
+                try {
+                    const clipConfig = JSON.parse(clipText);
+                    toast("Pasted config from clipboard", { autoClose: 500 });
+                    synchronizeWithConfig({ ...clipConfig, id: uniqueID() });
+                } catch (e) {
+                    toast.error("Failed to parse clipboard text as JSON");
+                }
+            });
+        } catch (e) {
+            toast.error("Failed to read clipboard text");
+        }
+    }
+
+    return (
+        <ShiftArrow onClick={pasteConfig} style={{ left: "calc(40% + 170px)" }}>
+            <FontAwesomeIcon icon={faFileImport} />
+        </ShiftArrow>
+    );
+};
+
+const DuplicateConfigButton = ({ config, duplicateConfig }) => {
+    // on click copy the config to the clipboard
+    function handleDuplicateConfig() {
+        duplicateConfig(config);
+    }
+
+    return (
+        <ShiftArrow onClick={handleDuplicateConfig} style={{ left: "calc(40% + 202px)" }}>
+            <FontAwesomeIcon icon={faPlus} />
+        </ShiftArrow>
+    );
+};
+
+const ImportConfigButton = ({ overwriteConfig }) => {};
+
+const FullWidthTextArea = styled.textarea`
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    font-size: 16px;
+    line-height: 1.5;
+`;
+
+const NoteTakingArea = ({ notes, updateConfig }) => {
+    const handleInputChange = (event) => {
+        updateConfig("notes", event.target.value);
+    };
+
+    return (
+        <FullWidthTextArea placeholder="Notes..." onChange={handleInputChange}>
+            {notes}
+        </FullWidthTextArea>
+    );
+};
+
 export {
     RowColSwapContainer,
     slideOutTime,
@@ -241,4 +340,9 @@ export {
     SweepSelectorContainer,
     ReorderArrows,
     ViewTypeSwitcher,
+    CopyConfigButton,
+    PasteConfigButton,
+    DuplicateConfigButton,
+    ImportConfigButton,
+    NoteTakingArea,
 };

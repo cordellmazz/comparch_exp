@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Chart, Interaction, registerables } from "chart.js";
 import styled from "styled-components";
+import CECheckbox from "../../input/CECheck";
 
 Chart.register(...registerables);
 
@@ -18,19 +19,17 @@ const defaultMetricsToDisplay = [
     "ctrl0writeReqs",
 ];
 
-function GraphDefaultView({ config = null, updateConfig, dbData }) {
+function GraphDefaultView({ dbData }) {
     const canvasRef = useRef(null);
     const chartInstanceRef = useRef(null);
+    const [logScale, setLogScale] = useState(false);
 
     // This function constructs the dataset needed for the radar chart
     const buildDatasets = () => {
         let labels = defaultMetricsToDisplay;
         let data = [];
 
-        console.log("dbData", dbData);
-
         labels.forEach((metric) => {
-            console.log("metric", '"' + metric + '"');
             if (dbData[0] && metric in dbData[0]) {
                 data.push(dbData[0][metric]);
             } else {
@@ -54,7 +53,7 @@ function GraphDefaultView({ config = null, updateConfig, dbData }) {
         }
 
         chartInstanceRef.current = new Chart(canvasRef.current, {
-            type: "radar",
+            type: "bar",
             data: {
                 labels: defaultMetricsToDisplay,
                 datasets: buildDatasets(),
@@ -70,6 +69,11 @@ function GraphDefaultView({ config = null, updateConfig, dbData }) {
                     mode: "index",
                     intersect: false,
                 },
+                scales: {
+                    y: {
+                        type: logScale ? "logarithmic" : "linear",
+                    },
+                },
             },
         });
 
@@ -78,10 +82,13 @@ function GraphDefaultView({ config = null, updateConfig, dbData }) {
                 chartInstanceRef.current.destroy();
             }
         };
-    }, [dbData]); // Rerender chart only when dbData changes
+    }, [dbData, logScale]); // Rerender chart only when dbData changes or logScale changes
 
     return (
         <GraphSweepViewContainer>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+                <CECheckbox title={"Log Scale"} value={logScale} setValue={setLogScale} />
+            </div>
             <canvas ref={canvasRef}></canvas>
         </GraphSweepViewContainer>
     );

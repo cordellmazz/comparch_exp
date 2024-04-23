@@ -78,7 +78,7 @@ const InfoIcon = styled.span`
 `;
 
 // React Component
-const InfoTip = ({ tooltipText, position = "above" }) => {
+const ToolTip = ({ tooltipText, position = "above" }) => {
     return (
         <TooltipContainer>
             <InfoIcon>
@@ -89,4 +89,4 @@ const InfoTip = ({ tooltipText, position = "above" }) => {
     );
 };
 
-export default InfoTip;
+export default ToolTip;

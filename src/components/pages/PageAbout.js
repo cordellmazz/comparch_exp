@@ -2,6 +2,20 @@ import styled from "styled-components";
 import Navigation from "../layout/Navigation";
 import MemberSummary from "../layout/misc/MemberSummary";
 
+const WhiteBackground = styled.div`
+    background-color: white;
+    opacity: 0.85;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+`;
+
 const AboutContainer = styled.div`
     width: 60%;
     height: 100%;
@@ -27,10 +41,35 @@ const AboutText = styled.div`
     }
 `;
 
+const BackgroundBanner = styled.img`
+    position: absolute;
+    top: 0;
+    // opacity: 0.3;
+    width: 100%;
+    height: 400px;
+    background-color: #f0f0f0;
+    z-index: -2;
+    object-fit: cover;
+`;
+
+const BackestgroundImage = styled.div`
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url("/images/background4.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -3;
+`;
+
 const PageAbout = () => {
     return (
         <>
             <Navigation />
+            <BackestgroundImage />
+            <BackgroundBanner src={"/images/background1.jpeg"} />
+            <WhiteBackground />
             <AboutContainer>
                 <AboutText>
                     <h1>About</h1>
@@ -49,9 +88,8 @@ const PageAbout = () => {
                         members={[
                             {
                                 name: "Ben Endara",
-                                summary:
-                                    "Experienced software engineer with a passion for developing scalable web applications and working across the full stack.",
-                                image: "path_to_image.jpg",
+                                summary: "Generated the benchmarks and created the simulation script using Gem5.",
+                                image: "/images/ben.jpeg",
                                 website: "https://johndoe.com",
                             },
                             {
@@ -70,8 +108,7 @@ const PageAbout = () => {
                             },
                             {
                                 name: "Jackson Schilling",
-                                summary:
-                                    "Digital marketer with a focus on SEO and SEM, helping businesses grow their online presence and increase ROI.",
+                                summary: "Worked on the database, data management, and documentation.",
                                 image: "/images/jackson.jpg",
                                 website: "https://alicebrown.com",
                             },

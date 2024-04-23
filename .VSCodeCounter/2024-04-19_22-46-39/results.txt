@@ -1,0 +1,83 @@
+Date : 2024-04-19 22:46:39
+Directory : /Users/cordputer/Documents/Projects/School/comparch_exp/src
+Total : 44 files,  3355 codes, 515 comments, 422 blanks, all 4292 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         42 |      3,345 |        515 |        421 |      4,281 |
+| JSON       |          1 |          9 |          0 |          1 |         10 |
+| XML        |          1 |          1 |          0 |          0 |          1 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                         | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                            |         44 |      3,355 |        515 |        422 |      4,292 |
+| . (Files)                                                                                                    |          7 |         80 |          7 |         12 |         99 |
+| components                                                                                                   |         33 |      3,119 |        475 |        373 |      3,967 |
+| components (Files)                                                                                           |          1 |        171 |         45 |         23 |        239 |
+| components/input                                                                                             |          8 |        526 |         22 |         91 |        639 |
+| components/layout                                                                                            |         19 |      2,175 |        402 |        228 |      2,805 |
+| components/layout (Files)                                                                                    |          3 |        218 |         12 |         31 |        261 |
+| components/layout/graphing                                                                                   |          5 |        176 |         66 |         38 |        280 |
+| components/layout/misc                                                                                       |          1 |         60 |          1 |         10 |         71 |
+| components/layout/simulation                                                                                 |          7 |      1,652 |        321 |        136 |      2,109 |
+| components/layout/structure                                                                                  |          3 |         69 |          2 |         13 |         84 |
+| components/pages                                                                                             |          4 |        210 |          4 |         25 |        239 |
+| components/styles                                                                                            |          1 |         37 |          2 |          6 |         45 |
+| context                                                                                                      |          4 |        156 |         33 |         37 |        226 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                     | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/App.js                                           | JavaScript |         39 |          0 |          3 |         42 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/App.test.js                                      | JavaScript |          7 |          0 |          2 |          9 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/atlasConfig.json                                 | JSON       |          9 |          0 |          1 |         10 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CEButton.js                     | JavaScript |         32 |          1 |          8 |         41 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CECheck.js                      | JavaScript |         34 |          1 |          8 |         43 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CEConfirm.js                    | JavaScript |        113 |          1 |         15 |        129 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CEDiscreteSlider.js             | JavaScript |         72 |          7 |         11 |         90 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CEDropdown.js                   | JavaScript |         61 |          0 |         11 |         72 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CERadio.js                      | JavaScript |         30 |          1 |          8 |         39 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/CESlider.js                     | JavaScript |         30 |          1 |          7 |         38 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/input/ConfigInput.js                  | JavaScript |        154 |         10 |         23 |        187 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/ChartBar.js                    | JavaScript |         44 |          5 |          9 |         58 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/Navigation.js                  | JavaScript |         96 |          2 |         12 |        110 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/ToolTip.js                     | JavaScript |         78 |          5 |         10 |         93 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/graphing/GraphDefaultView.js   | JavaScript |         75 |          1 |         15 |         91 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/graphing/GraphManager.js       | JavaScript |          0 |          1 |          1 |          2 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/graphing/GraphPlainView.js     | JavaScript |         30 |         23 |         10 |         63 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/graphing/GraphSweepView.js     | JavaScript |         71 |         39 |         11 |        121 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/graphing/GraphingContainer.js  | JavaScript |          0 |          2 |          1 |          3 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/misc/MemberSummary.js          | JavaScript |         60 |          1 |         10 |         71 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/CEConfig.js         | JavaScript |        698 |        249 |         41 |        988 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/DefaultConfig.js    | JavaScript |         18 |          2 |          3 |         23 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/SimMod.js           | JavaScript |        175 |         11 |         12 |        198 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/SimModContainer.js  | JavaScript |        230 |         21 |         27 |        278 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/SimModDivs.js       | JavaScript |        249 |         11 |         31 |        291 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/SimModTest.js       | JavaScript |        120 |          4 |          7 |        131 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/simulation/SimulationModule.js | JavaScript |        162 |         23 |         15 |        200 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/structure/FlexBox.js           | JavaScript |         25 |          2 |          5 |         32 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/structure/FlexColumn.js        | JavaScript |         22 |          0 |          4 |         26 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/layout/structure/FlexRow.js           | JavaScript |         22 |          0 |          4 |         26 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/pages/Page404.js                      | JavaScript |         11 |          1 |          3 |         15 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/pages/PageAbout.js                    | JavaScript |        104 |          2 |          8 |        114 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/pages/PageHome.js                     | JavaScript |         63 |          0 |          9 |         72 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/pages/PageSimulation.js               | JavaScript |         32 |          1 |          5 |         38 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/scratch.js                            | JavaScript |        171 |         45 |         23 |        239 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/components/styles/GlobalStyles.js                | JavaScript |         37 |          2 |          6 |         45 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/context/DatabaseProvider.js                      | JavaScript |        100 |         30 |         17 |        147 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/context/LocalDataProvider.js                     | JavaScript |         22 |          2 |          8 |         32 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/context/NavigationProvider.js                    | JavaScript |         20 |          0 |          6 |         26 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/context/SettingsProvider.js                      | JavaScript |         14 |          1 |          6 |         21 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/index.js                                         | JavaScript |         11 |          3 |          3 |         17 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/logo.svg                                         | XML        |          1 |          0 |          0 |          1 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/reportWebVitals.js                               | JavaScript |         12 |          0 |          2 |         14 |
+| /Users/cordputer/Documents/Projects/School/comparch_exp/src/setupTests.js                                    | JavaScript |          1 |          4 |          1 |          6 |
+| Total                                                                                                        |            |      3,355 |        515 |        422 |      4,292 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

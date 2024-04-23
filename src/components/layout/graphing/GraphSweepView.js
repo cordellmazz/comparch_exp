@@ -2,12 +2,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
 import styled from "styled-components";
-import { useDatabase } from "../../../context/DatabaseProvider";
+import CECheckbox from "../../input/CECheck";
 
 const GraphSweepViewContainer = styled.div`
     width: 100%;
     height: 100%;
     padding: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 `;
 
 function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepParameter, dbData }) {
@@ -17,6 +20,7 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
 
     // visual / animations
     const [graphLoading, setGraphLoading] = useState(false);
+    const [logScale, setLogScale] = useState(false);
 
     // build datasets function
     function buildDatasets() {
@@ -31,7 +35,6 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
     }
 
     useEffect(() => {
-        console.log("dbData", dbData);
         // update objects within config
         if (dbData) {
             updateConfig("db_data", dbData);
@@ -61,20 +64,10 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
                         intersect: false,
                     },
                     scales: {
-                        // y: {
-                        //     beginAtZero: true,
-                        //     title: {
-                        //         display: true,
-                        //         text: , // Y-axis label
-                        //         // color: "#911", // Optional: color of label
-                        //         // font: {
-                        //         //     family: "Comic Sans MS", // Optional: font
-                        //         //     size: 20, // Optional: size in px
-                        //         //     weight: "bold", // Optional: font weight
-                        //         //     lineHeight: 1.2, // Optional: line height
-                        //         // },
-                        //     },
-                        // },
+                        y: {
+                            beginAtZero: true,
+                            type: logScale ? "logarithmic" : "linear",
+                        },
                         x: {
                             title: {
                                 display: true,
@@ -108,10 +101,14 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
                 chartInstanceRef.current = null;
             }
         };
-    }, [dbData, selectedMetrics]);
+    }, [dbData, selectedMetrics, logScale]);
 
+    // inline text for the log scale checkbox
     return (
         <GraphSweepViewContainer>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+                <CECheckbox title={"Log Scale"} value={logScale} setValue={setLogScale} />
+            </div>
             <canvas ref={canvasRef} />
         </GraphSweepViewContainer>
     );
