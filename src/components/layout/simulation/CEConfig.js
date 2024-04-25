@@ -238,53 +238,132 @@ const CoherencePolicies = {
 //     },
 // };
 
-// function that checks the depth of a JSON object by recursively traversing it
+// BaseO3CPU has all params
+// l1d_size = {"8192", "32768", "131072"}
+// l2_size = {"131072", "524288", "2097152"}
+// branch_pred_type = {'LocalBP', 'MultiperspectivePerceptron8KB', 'TAGE'}
+// num_rob_entries = {'32', '128',  '512'}
+// num_phys_int_regs = {'128', '256', '512'}
+// fu_list_0_count = {'1', '4', '16'}
+// fu_list_1_count = {'1', '4', '16'}
+
+// BaseMinorCPU has all params
+// l1d_size = {'32768', '1024', '2048', '131072', '8192', '65536', '4096'}
+// l2_size = {"16384", "32768", "65536", "131072", "524288", "1048576", "2097152"}
+// branch_pred_type = {'BiModeBP', 'LocalBP', 'MultiperspectivePerceptron8KB', 'TAGE'}
+
+// const simModStructure = {
+//     CORE_TYPE: {
+//         title: "Core Type",
+//         type: "dropdown",
+//         dynamic: true,
+//         options: {
+//             BASE_O3_CPU: {
+//                 title: "Base O3 CPU",
+//                 dependent: true,
+//                 options: {
+//                     L1D_SIZE: {
+//                         title: "L1D Size",
+//                         type: "dsliders",
+//                         options: ["8192", "32768", "131072"],
+//                     },
+//                     L2_SIZE: {
+//                         title: "L2 Size",
+//                         type: "dsliders",
+//                         options: ["131072", "524288", "2097152"],
+//                     },
+//                     BRANCH_PRED_TYPE: {
+//                         title: "Branch Predictor Type",
+//                         type: "dropdown",
+//                         options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
+//                     },
+//                     NUM_ROB_ENTRIES: {
+//                         title: "Number of ROB Entries",
+//                         type: "dsliders",
+//                         options: ["32", "128", "512"],
+//                     },
+//                     NUM_PHYS_INT_REGS: {
+//                         title: "Number of Physical Integer Registers",
+//                         type: "dsliders",
+//                         options: ["128", "256", "512"],
+//                     },
+//                     FU_LIST_0_COUNT: {
+//                         title: "FU List 0 Count",
+//                         type: "dsliders",
+//                         options: ["1", "4", "16"],
+//                     },
+//                     FU_LIST_1_COUNT: {
+//                         title: "FU List 1 Count",
+//                         type: "dsliders",
+//                         options: ["1", "4", "16"],
+//                     },
+//                 },
+//             },
+//             BASE_MINOR_CPU: {
+//                 title: "Base Minor CPU",
+//                 dependent: true,
+//                 options: {
+//                     L1D_SIZE: {
+//                         title: "L1D Size",
+//                         type: "dsliders",
+//                         options: ["1024", "2048", "4096", "8192", "32768", "65536", "131072"],
+//                     },
+//                     L2_SIZE: {
+//                         title: "L2 Size",
+//                         type: "dsliders",
+//                         options: ["16384", "32768", "65536", "131072", "524288", "1048576", "2097152"],
+//                     },
+//                     BRANCH_PRED_TYPE: {
+//                         title: "Branch Predictor Type",
+//                         type: "dropdown",
+//                         options: ["BiModeBP", "LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
+//                     },
+//                 },
+//             },
+//         },
+//     },
+// };
 
 const simModStructure = {
+    CORE_TYPE: {
+        title: "Core Type",
+        type: "dropdown",
+        options: ["BaseO3CPU", "BaseMinorCPU"],
+    },
     L1D_SIZE: {
         title: "L1D Size",
         type: "dsliders",
-        options: ["16kB", "32kB", "64kB", "128kB"],
-    },
-    L1I_SIZE: {
-        title: "L1I Size",
-        type: "dsliders",
-        options: ["16kB", "32kB", "64kB", "128kB"],
+        options: ["8192", "32768", "131072"],
     },
     L2_SIZE: {
         title: "L2 Size",
         type: "dsliders",
-        options: ["256kB", "512kB", "1024kB", "2048kB"],
+        options: ["131072", "524288", "2097152"],
     },
-    MEMORY_TYPE: {
-        title: "Memory Type",
+    BRANCH_PRED_TYPE: {
+        title: "Branch Predictor Type",
         type: "dropdown",
-        options: ["DualChannelDDR4_2400"],
+        options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
     },
-    MEMORY_SIZE: {
-        title: "Memory Size",
+    NUM_ROB_ENTRIES: {
+        title: "Number of ROB Entries",
         type: "dsliders",
-        options: ["2GB"],
+        options: ["32", "128", "512"],
     },
-    CPU_TYPE: {
-        title: "CPU Type",
-        type: "dropdown",
-        options: ["minor", "o3"],
-    },
-    ISA: {
-        title: "ISA",
-        type: "dropdown",
-        options: ["X86"],
-    },
-    NUM_CORES: {
-        title: "Number of Cores",
+    NUM_PHYS_INT_REGS: {
+        title: "Number of Physical Integer Registers",
         type: "dsliders",
-        options: ["1"],
+        options: ["128", "256", "512"],
     },
-    BOARD_CLK_FREQ: {
-        title: "Board Clock Freq.",
-        type: "dropdown",
-        options: ["3GHz"],
+    FU_LIST_0_COUNT: {
+        title: "FU List 0 Count",
+        type: "dsliders",
+        options: ["1", "4", "16"],
+    },
+    FU_LIST_1_COUNT: {
+        title: "FU List 1 Count",
+        type: "dsliders",
+        options: ["1", "4", "16"],
     },
 };
 
