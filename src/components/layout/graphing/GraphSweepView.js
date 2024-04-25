@@ -23,15 +23,21 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
     const [logScale, setLogScale] = useState(false);
 
     // build datasets function
-    function buildDatasets() {
+    function buildDatasets(buildData) {
         // for each metric in selectedMetrics, build a dataset using the data from the data dict
         const datasets = selectedMetrics.map((metric) => {
             return {
                 label: metric,
-                data: Object.values(dbData).map((run) => run[metric]),
+                data: Object.values(buildData).map((run) => run[metric]),
             };
         });
         return datasets;
+    }
+
+    function sortMetricsByValue(metrics, value) {
+        return metrics.sort((a, b) => {
+            return a[value] - b[value];
+        });
     }
 
     useEffect(() => {
@@ -50,12 +56,15 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
         }
 
         if (dbData) {
+            console.log("Building chart with data: ", dbData);
             // Initialize the chart using the canvas ref
+            const orderedDbData = sortMetricsByValue(dbData, sweepParameter);
+
             chartInstanceRef.current = new Chart(canvasRef.current, {
                 type: "line",
                 data: {
-                    labels: Object.values(dbData).map((run) => run[sweepParameter]),
-                    datasets: buildDatasets(),
+                    labels: Object.values(orderedDbData).map((run) => run[sweepParameter]),
+                    datasets: buildDatasets(orderedDbData),
                 },
                 options: {
                     responsive: true,
