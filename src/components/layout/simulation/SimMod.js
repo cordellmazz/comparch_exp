@@ -178,15 +178,14 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                                             value={sweepParameter}
                                             setValue={setSweepParameter}
                                             options={[
+                                                "core_type",
                                                 "l1d_size",
-                                                "l1i_size",
                                                 "l2_size",
-                                                "memory_type",
-                                                "memory_size",
-                                                "cpu_type",
-                                                "isa",
-                                                "num_cores",
-                                                "board_clk_freq",
+                                                "branch_pred_type",
+                                                "num_rob_entries",
+                                                "num_phys_int_regs",
+                                                "fu_list_0_count",
+                                                "fu_list_1_count",
                                             ]}
                                         />
                                         <ToolTip

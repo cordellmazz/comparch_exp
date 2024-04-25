@@ -373,12 +373,12 @@ const metricOptions = {
         dynamic: true,
         type: "dropdown",
         options: {
-            SIMULATION: {
-                title: "Simulation metrics",
-                type: "dropdown",
-                dependent: true,
-                options: ["simSeconds", "simTicks", "finalTick", "simFreq", "hostSeconds", "hostTickRate"],
-            },
+            // SIMULATION: {
+            //     title: "Simulation metrics",
+            //     type: "dropdown",
+            //     dependent: true,
+            //     options: ["simSeconds", "simTicks", "finalTick", "simFreq", "hostSeconds", "hostTickRate"],
+            // },
             L1: {
                 title: "L1 parameters",
                 type: "dropdown",

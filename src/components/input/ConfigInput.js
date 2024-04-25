@@ -180,11 +180,6 @@ const renderSimModule = (structure, keyPrefix = "", config, updateConfig) => {
 };
 
 const RecursiveStructure = ({ structure = simModStructure, prefix = "", config, updateConfig }) => {
-    console.log("Rendering RecursiveStructure");
-    console.log("structure", structure);
-    console.log("prefix", prefix);
-    console.log("config", config);
-    console.log("updateConfig", updateConfig);
     return <Container>{renderSimModule(structure, prefix, config, updateConfig)}</Container>;
 };
 
