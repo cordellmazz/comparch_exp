@@ -328,7 +328,7 @@ const simModStructure = {
     CORE_TYPE: {
         title: "Core Type",
         type: "dropdown",
-        options: ["BaseO3CPU", "BaseMinorCPU"],
+        options: ["BaseO3CPU"],
     },
     L1D_SIZE: {
         title: "L1D Size",
