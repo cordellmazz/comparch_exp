@@ -57,7 +57,7 @@ const ButtonContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100%;
+    min-height: 98vh;
 `;
 
 // styled div which holds the counter for how many modules the container has position at the bottom of its container, text is in center of div
@@ -91,16 +91,34 @@ function SimModContainer() {
     const [simSets, setSimSets] = useState(JSON.parse(localStorage.getItem("saves")) || {});
 
     const [defaultConfig] = useState(CEConfig.DefaultConfig);
+    const createNewConfig = () => {
+        return {
+            input: defaultConfig,
+            id: uniqueID(),
+            name: "",
+            db_data: [{ ...CEConfig.firstDoc }],
+            selected_metrics: [],
+        };
+    };
+
     const [loaded, setLoaded] = useState(false);
-    const [configs, setConfigs] = useState([{ ...defaultConfig, id: uniqueID(), name: "" }]);
+    const [configs, setConfigs] = useState(createNewConfig());
     // database data is stored in configs under the key "dbData"
     // useEffect to load configs from local storage
     useEffect(() => {
-        const localConfigs = JSON.parse(localStorage.getItem("configs"));
-        if (localConfigs) {
-            setConfigs(localConfigs);
+        try {
+            const localConfigs = JSON.parse(localStorage.getItem("configs"));
+            if (localConfigs) {
+                setConfigs(localConfigs);
+            } else {
+                const newDefaultConfig = createNewConfig();
+                localStorage.setItem("configs", JSON.stringify([newDefaultConfig]));
+                setConfigs([newDefaultConfig]);
+            }
+            setLoaded(true);
+        } catch (e) {
+            console.error("Error loading configs:", e);
         }
-        setLoaded(true);
     }, []);
 
     useEffect(() => {
@@ -131,16 +149,10 @@ function SimModContainer() {
     };
 
     const appendNewConfig = () => {
-        if (configs.length < 10) {
-            const newConfig = {
-                input: defaultConfig,
-                id: uniqueID(),
-                name: "",
-                db_data: [{ ...CEConfig.firstDoc }], // make an empty JSON object for later use storing database data
-                selected_metrics: [],
-            };
-            setConfigs((currentConfigs) => [...currentConfigs, newConfig]);
-        }
+        // if (configs.length < 10) {
+        const newConfig = createNewConfig();
+        setConfigs((currentConfigs) => [...currentConfigs, newConfig]);
+        // }
     };
 
     // shift config to the right in the array
@@ -309,36 +321,36 @@ function SimModContainer() {
 
     return (
         <>
-            <CESaveDialog
-                isOpen={saveDialogOpen}
-                title="Save Simulation Set"
-                message="name of simulation set:"
-                onConfirm={saveSimSet}
-                onCancel={cancelSaveSimSet}
-                simSetName={simSetName}
-                setSimSetName={setSimSetName}
-                importText={importText}
-                setImportText={setImportText}
-                importSimSet={importSimSet}
-            />
-            <CELoadDialog
-                isOpen={loadDialogOpen}
-                title="Load Simulation Set"
-                message="choose simulation set to load:"
-                onConfirm={loadSimSet}
-                onCancel={cancelLoadSimSet}
-                chosenSimSet={chosenSimSet}
-                setChosenSimSet={setChosenSimSet}
-                options={Object.keys(simSets)}
-                deleteSimSet={deleteSimSet}
-                exportSimSet={exportSimSet}
-            />
             {loaded ? (
                 <SimModContainerDiv>
+                    <CESaveDialog
+                        isOpen={saveDialogOpen}
+                        title="Save Simulation Set"
+                        message="name of simulation set:"
+                        onConfirm={saveSimSet}
+                        onCancel={cancelSaveSimSet}
+                        simSetName={simSetName}
+                        setSimSetName={setSimSetName}
+                        importText={importText}
+                        setImportText={setImportText}
+                        importSimSet={importSimSet}
+                    />
+                    <CELoadDialog
+                        isOpen={loadDialogOpen}
+                        title="Load Simulation Set"
+                        message="choose simulation set to load:"
+                        onConfirm={loadSimSet}
+                        onCancel={cancelLoadSimSet}
+                        chosenSimSet={chosenSimSet}
+                        setChosenSimSet={setChosenSimSet}
+                        options={Object.keys(simSets)}
+                        deleteSimSet={deleteSimSet}
+                        exportSimSet={exportSimSet}
+                    />
                     <ButtonContainer>
                         <AppendButton onClick={appendNewConfig}>
                             <FontAwesomeIcon icon={faPlus} size="2x" />
-                            <ModuleCounter>{configs.length}/10</ModuleCounter>
+                            {/* <ModuleCounter>{configs.length}/10</ModuleCounter> */}
                         </AppendButton>
                         <SaveButton onClick={saveState}>
                             <FontAwesomeIcon icon={faSave} />

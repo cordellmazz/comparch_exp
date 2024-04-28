@@ -252,120 +252,131 @@ const CoherencePolicies = {
 // l2_size = {"16384", "32768", "65536", "131072", "524288", "1048576", "2097152"}
 // branch_pred_type = {'BiModeBP', 'LocalBP', 'MultiperspectivePerceptron8KB', 'TAGE'}
 
-// const simModStructure = {
-//     CORE_TYPE: {
-//         title: "Core Type",
-//         type: "dropdown",
-//         dynamic: true,
-//         options: {
-//             BASE_O3_CPU: {
-//                 title: "Base O3 CPU",
-//                 dependent: true,
-//                 options: {
-//                     L1D_SIZE: {
-//                         title: "L1D Size",
-//                         type: "dsliders",
-//                         options: ["8192", "32768", "131072"],
-//                     },
-//                     L2_SIZE: {
-//                         title: "L2 Size",
-//                         type: "dsliders",
-//                         options: ["131072", "524288", "2097152"],
-//                     },
-//                     BRANCH_PRED_TYPE: {
-//                         title: "Branch Predictor Type",
-//                         type: "dropdown",
-//                         options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
-//                     },
-//                     NUM_ROB_ENTRIES: {
-//                         title: "Number of ROB Entries",
-//                         type: "dsliders",
-//                         options: ["32", "128", "512"],
-//                     },
-//                     NUM_PHYS_INT_REGS: {
-//                         title: "Number of Physical Integer Registers",
-//                         type: "dsliders",
-//                         options: ["128", "256", "512"],
-//                     },
-//                     FU_LIST_0_COUNT: {
-//                         title: "FU List 0 Count",
-//                         type: "dsliders",
-//                         options: ["1", "4", "16"],
-//                     },
-//                     FU_LIST_1_COUNT: {
-//                         title: "FU List 1 Count",
-//                         type: "dsliders",
-//                         options: ["1", "4", "16"],
-//                     },
-//                 },
-//             },
-//             BASE_MINOR_CPU: {
-//                 title: "Base Minor CPU",
-//                 dependent: true,
-//                 options: {
-//                     L1D_SIZE: {
-//                         title: "L1D Size",
-//                         type: "dsliders",
-//                         options: ["1024", "2048", "4096", "8192", "32768", "65536", "131072"],
-//                     },
-//                     L2_SIZE: {
-//                         title: "L2 Size",
-//                         type: "dsliders",
-//                         options: ["16384", "32768", "65536", "131072", "524288", "1048576", "2097152"],
-//                     },
-//                     BRANCH_PRED_TYPE: {
-//                         title: "Branch Predictor Type",
-//                         type: "dropdown",
-//                         options: ["BiModeBP", "LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
-//                     },
-//                 },
-//             },
-//         },
-//     },
-// };
-
 const simModStructure = {
     CORE_TYPE: {
         title: "Core Type",
         type: "dropdown",
-        options: ["BaseO3CPU"],
-    },
-    L1D_SIZE: {
-        title: "L1D Size",
-        type: "dsliders",
-        options: ["8192", "32768", "131072"],
-    },
-    L2_SIZE: {
-        title: "L2 Size",
-        type: "dsliders",
-        options: ["131072", "524288", "2097152"],
-    },
-    BRANCH_PRED_TYPE: {
-        title: "Branch Predictor Type",
-        type: "dropdown",
-        options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
-    },
-    NUM_ROB_ENTRIES: {
-        title: "Number of ROB Entries",
-        type: "dsliders",
-        options: ["32", "128", "512"],
-    },
-    NUM_PHYS_INT_REGS: {
-        title: "Number of Physical Integer Registers",
-        type: "dsliders",
-        options: ["128", "256", "512"],
-    },
-    FU_LIST_0_COUNT: {
-        title: "FU List 0 Count",
-        type: "dsliders",
-        options: ["1", "4", "16"],
-    },
-    FU_LIST_1_COUNT: {
-        title: "FU List 1 Count",
-        type: "dsliders",
-        options: ["1", "4", "16"],
+        description: "The type of core to simulate",
+        dynamic: true,
+        options: {
+            BASE_O3_CPU: {
+                title: "Base O3 CPU",
+                dependent: true,
+                options: {
+                    L1D_SIZE: {
+                        title: "L1D Size",
+                        description: "the capacity of the L1 Data Cache",
+                        type: "dsliders",
+                        options: ["8192", "32768", "131072"],
+                    },
+                    L2_SIZE: {
+                        title: "L2 Size",
+                        type: "dsliders",
+                        description: "the capacity of the L2 Cache",
+                        options: ["131072", "524288", "2097152"],
+                    },
+                    BRANCH_PRED_TYPE: {
+                        title: "Branch Predictor Type",
+                        type: "dropdown",
+                        description:
+                            "different implementations for branch prediction, modern processors use Perceptron and or TAGE based predictors",
+                        options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
+                    },
+                    NUM_ROB_ENTRIES: {
+                        title: "Number of ROB Entries",
+                        type: "dsliders",
+                        description:
+                            "reorder buffer size, more entries allow an out of order processor to execute more instructions in parallel (out of order)",
+                        options: ["32", "128", "512"],
+                    },
+                    NUM_PHYS_INT_REGS: {
+                        title: "Number of Physical Integer Registers",
+                        type: "dsliders",
+                        description:
+                            "More physical registers allow the processor to keep more data closer at hand and reduce spills; also improve instruction scheduling efficiency",
+                        options: ["128", "256", "512"],
+                    },
+                    FU_LIST_0_COUNT: {
+                        title: "FU List 0 Count",
+                        type: "dsliders",
+                        description: "number of ALUs in the pipeline",
+                        options: ["1", "4", "16"],
+                    },
+                    FU_LIST_1_COUNT: {
+                        title: "FU List 1 Count",
+                        type: "dsliders",
+                        description: "number of MUL/DIV Units in the pipeline",
+                        options: ["1", "4", "16"],
+                    },
+                },
+            },
+            BASE_MINOR_CPU: {
+                title: "Base Minor CPU",
+                dependent: true,
+                options: {
+                    L1D_SIZE: {
+                        title: "L1D Size",
+                        type: "dsliders",
+                        options: ["1024", "2048", "4096", "8192", "32768", "65536", "131072"],
+                    },
+                    L2_SIZE: {
+                        title: "L2 Size",
+                        type: "dsliders",
+                        options: ["16384", "32768", "65536", "131072", "524288", "1048576", "2097152"],
+                    },
+                    BRANCH_PRED_TYPE: {
+                        title: "Branch Predictor Type",
+                        type: "dropdown",
+                        options: ["BiModeBP", "LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
+                    },
+                },
+            },
+        },
     },
 };
+
+// const simModStructure = {
+//     CORE_TYPE: {
+//         title: "Core Type",
+//         type: "dropdown",
+//         options: ["BaseO3CPU"],
+//     },
+//     L1D_SIZE: {
+//         title: "L1D Size",
+//         type: "dsliders",
+//         options: ["8192", "32768", "131072"],
+//     },
+//     L2_SIZE: {
+//         title: "L2 Size",
+//         type: "dsliders",
+//         options: ["131072", "524288", "2097152"],
+//     },
+//     BRANCH_PRED_TYPE: {
+//         title: "Branch Predictor Type",
+//         type: "dropdown",
+//         options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
+//     },
+//     NUM_ROB_ENTRIES: {
+//         title: "Number of ROB Entries",
+//         type: "dsliders",
+//         options: ["32", "128", "512"],
+//     },
+//     NUM_PHYS_INT_REGS: {
+//         title: "Number of Physical Integer Registers",
+//         type: "dsliders",
+//         options: ["128", "256", "512"],
+//     },
+//     FU_LIST_0_COUNT: {
+//         title: "FU List 0 Count",
+//         type: "dsliders",
+//         options: ["1", "4", "16"],
+//     },
+//     FU_LIST_1_COUNT: {
+//         title: "FU List 1 Count",
+//         type: "dsliders",
+//         options: ["1", "4", "16"],
+//     },
+// };
 
 const metricOptions = {
     GROUPS: {

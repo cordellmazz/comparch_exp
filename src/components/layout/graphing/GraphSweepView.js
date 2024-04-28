@@ -7,7 +7,8 @@ import CECheckbox from "../../input/CECheck";
 const GraphSweepViewContainer = styled.div`
     width: 100%;
     height: 100%;
-    padding: 5%;
+    padding: 2%;
+    padding-top: 3%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

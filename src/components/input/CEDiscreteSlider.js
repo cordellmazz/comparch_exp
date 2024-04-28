@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import CEDropdown from "./CEDropdown";
 import FlexRow from "../layout/structure/FlexRow";
+import ToolTip from "../layout/ToolTip";
 
 const SliderContainer = styled.div`
     display: flex;
@@ -29,7 +30,7 @@ const ValueDisplay = styled.p`
 
 const Label = styled.p`
     font-size: 16px;
-    width: 50%;
+    width: 60%;
     text-align: left;
     justify-content: center;
     margin: 0;
@@ -41,7 +42,7 @@ function findIndexInOptions(options, value) {
     return index;
 }
 
-const CEDiscreteSlider = ({ width, height, options, value, setValue, title = "" }) => {
+const CEDiscreteSlider = ({ width, height, options, value, setValue, title = "", description }) => {
     try {
         // if options is a JSON object normalize it to an array of strings where each string is a key in the object
         // if (typeof options === "object" && !Array.isArray(options)) {
@@ -78,11 +79,11 @@ const CEDiscreteSlider = ({ width, height, options, value, setValue, title = "" 
                     <CEDropdown value={value} setValue={handleDropdownChange} options={options} />
                     {/* <ValueDisplay>{title ? `${title}: ${value}` : value}</ValueDisplay> */}
                 </FlexRow>
+                {description ? <ToolTip tooltipText={description} position="left" /> : null}
             </SliderContainer>
         );
     } catch (e) {
         console.log("Error in CEDiscreteSlider:", e);
-        console.log("options:", options);
         return null;
     }
 };

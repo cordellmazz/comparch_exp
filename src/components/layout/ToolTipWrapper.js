@@ -5,7 +5,7 @@ import styled, { css } from "styled-components";
 const TooltipContainer = styled.div`
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    cursor: help;
 `;
 
 // Dynamic positioning for the tooltip

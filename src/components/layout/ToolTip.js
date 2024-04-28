@@ -7,7 +7,6 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 const TooltipContainer = styled.div`
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black; // Optional styling
 `;
 
 // Dynamic positioning for the tooltip
@@ -61,11 +60,11 @@ const TooltipText = styled.span`
 `;
 
 // Info Icon that changes color on hover
-const InfoIcon = styled.span`
-    padding: 5px;
-    border-radius: 50%;
+const InfoIcon = styled.div`
     cursor: pointer;
+    color: gray;
     transition: background-color 0.3s, color 0.3s;
+    margin-top: 2px;
 
     &:hover {
         color: #bf5700;

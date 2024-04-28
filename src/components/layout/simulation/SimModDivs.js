@@ -16,11 +16,15 @@ const slideOutTime = 0.5; // in seconds
 
 const RowColSwapContainer = styled.div`
     display: flex;
-    flex-direction: ${(props) => (props.isRow ? "row" : "column")};
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
+
+    @container (min-width: 800px) {
+        flex-direction: row-reverse;
+    }
 `;
 
 const SweepSelectorContainer = styled.div`
@@ -47,6 +51,8 @@ const SimModDiv = styled.div`
     overflow-x: hidden;
     min-width: max(25vw, 500px);
     height: 94vh;
+    max-width: max(75vw, 1000px);
+    container-type: inline-size;
 `;
 
 // styled div for the sim module when it is deleted
@@ -63,6 +69,25 @@ const SimModDivAnimated = styled(SimModDiv)`
         overflow: hidden;
         transition: min-width ${slideOutTime - 0.05}s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out,
             margin 0.5s ease-out;
+    }
+`;
+
+const InputUIContainer = styled.div`
+    width: 100%;
+    max-width: 25vw;
+
+    @container (min-width: 800px) {
+        color: red;
+        margin-top: 25px;
+        max-width: max(25vw, 500px);
+    }
+`;
+
+const GraphUIContainer = styled.div`
+    width: 100%;
+
+    @container (min-width: 800px) {
+        max-width: 25vw;
     }
 `;
 
@@ -192,7 +217,7 @@ const Highlighter = styled.div`
 
 const TextContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 5px;
     overflow: hidden;
 `;
@@ -326,23 +351,25 @@ const NoteTakingArea = ({ notes, updateConfig }) => {
 };
 
 export {
+    CopyConfigButton,
+    DeleteButton,
+    DuplicateConfigButton,
+    GraphUIContainer,
+    HideContainer,
+    Highlighter,
+    ImportConfigButton,
+    InputUIContainer,
+    NoteTakingArea,
+    NumberMarker,
+    PasteConfigButton,
+    ReorderArrows,
     RowColSwapContainer,
-    slideOutTime,
+    SelectedMetrics,
     SimModDiv,
     SimModDivAnimated,
-    NumberMarker,
-    TitleInput,
-    DeleteButton,
-    SelectedMetrics,
-    Highlighter,
-    TextOptions,
-    HideContainer,
+    slideOutTime,
     SweepSelectorContainer,
-    ReorderArrows,
+    TextOptions,
+    TitleInput,
     ViewTypeSwitcher,
-    CopyConfigButton,
-    PasteConfigButton,
-    DuplicateConfigButton,
-    ImportConfigButton,
-    NoteTakingArea,
 };

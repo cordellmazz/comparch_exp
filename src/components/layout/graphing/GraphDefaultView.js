@@ -8,7 +8,10 @@ Chart.register(...registerables);
 const GraphSweepViewContainer = styled.div`
     width: 100%;
     height: 100%;
-    padding: 5%;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 `;
 
 const defaultMetricsToDisplay = [

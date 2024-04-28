@@ -27,6 +27,8 @@ import {
     NoteTakingArea,
     PasteConfigButton,
     DuplicateConfigButton,
+    GraphUIContainer,
+    InputUIContainer,
 } from "./SimModDivs.js";
 import GraphDefaultView from "../graphing/GraphDefaultView.js";
 import { toast } from "react-toastify";
@@ -157,52 +159,58 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                             dbData={dbData}
                         />
                     )}
-                    <FlexColumn align={"left"}>
-                        {viewType === "default" ? null : (
-                            <>
-                                <RecursiveStructure
-                                    structure={CEConfig.metricOptions}
-                                    config={metricChoice}
-                                    updateConfig={(path, value) => {
-                                        updateConfig(path, value, setMetricChoice);
-                                    }}
-                                />
-                                <CEButton title={"Add Metric"} func={addMetricToSet} />
-                                <SelectedMetrics>
-                                    <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
-                                </SelectedMetrics>
-                                <SweepSelectorContainer>
-                                    <FlexRow>
-                                        <CEDropdown
-                                            title={"Sweep Metric:"}
-                                            value={sweepParameter}
-                                            setValue={setSweepParameter}
-                                            options={[
-                                                "core_type",
-                                                "l1d_size",
-                                                "l2_size",
-                                                "branch_pred_type",
-                                                "num_rob_entries",
-                                                "num_phys_int_regs",
-                                                "fu_list_0_count",
-                                                "fu_list_1_count",
-                                            ]}
-                                        />
-                                        <ToolTip
-                                            tooltipText={
-                                                "Select a metric to sweep over (x axis), value will be ignored below."
-                                            }
-                                            position="left"
-                                        />
-                                    </FlexRow>
-                                </SweepSelectorContainer>
-                            </>
-                        )}
+                    <InputUIContainer>
+                        <FlexColumn align={"left"}>
+                            {viewType === "default" ? null : (
+                                <>
+                                    <RecursiveStructure
+                                        structure={CEConfig.metricOptions}
+                                        config={metricChoice}
+                                        updateConfig={(path, value) => {
+                                            updateConfig(path, value, setMetricChoice);
+                                        }}
+                                    />
+                                    <CEButton title={"Add Metric"} func={addMetricToSet} />
+                                    <SelectedMetrics>
+                                        <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
+                                    </SelectedMetrics>
+                                    <SweepSelectorContainer>
+                                        <FlexRow>
+                                            <CEDropdown
+                                                title={"Sweep Metric:"}
+                                                value={sweepParameter}
+                                                setValue={setSweepParameter}
+                                                options={[
+                                                    "core_type",
+                                                    "l1d_size",
+                                                    "l2_size",
+                                                    "branch_pred_type",
+                                                    "num_rob_entries",
+                                                    "num_phys_int_regs",
+                                                    "fu_list_0_count",
+                                                    "fu_list_1_count",
+                                                ]}
+                                            />
+                                            <ToolTip
+                                                tooltipText={
+                                                    "Select a metric to sweep over (x axis), value will be ignored below."
+                                                }
+                                                position="left"
+                                            />
+                                        </FlexRow>
+                                    </SweepSelectorContainer>
+                                </>
+                            )}
 
-                        <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
-                        {getSimLoading ? <CELoadingIcon /> : <CEButton title={"Get Simulation"} func={getSimulation} />}
-                        <NoteTakingArea notes={config.notes} updateConfig={updateConfig} />
-                    </FlexColumn>
+                            <RecursiveStructure config={config} updateConfig={updateConfig} prefix={"input"} />
+                            {getSimLoading ? (
+                                <CELoadingIcon />
+                            ) : (
+                                <CEButton title={"Get Simulation"} func={getSimulation} />
+                            )}
+                            <NoteTakingArea notes={config.notes} updateConfig={updateConfig} />
+                        </FlexColumn>
+                    </InputUIContainer>
                 </RowColSwapContainer>
             </FlexBox>
         </SimModDivAnimated>
