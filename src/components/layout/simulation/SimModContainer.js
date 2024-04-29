@@ -8,6 +8,7 @@ import { faPlus, faSave, faShareFromSquare } from "@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CESaveDialog, { CELoadDialog } from "../../input/CEConfirm.js";
 import { toast } from "react-toastify";
+import { defaultSims } from "./CEDefaultSims.js";
 
 // sim mod container styled div with overflow x scroll, takes up the full width of the screen
 const SimModContainerDiv = styled.div`
@@ -96,7 +97,7 @@ function SimModContainer() {
             input: defaultConfig,
             id: uniqueID(),
             name: "",
-            db_data: [{ ...CEConfig.firstDoc }],
+            db_data: defaultSims,
             selected_metrics: [],
         };
     };

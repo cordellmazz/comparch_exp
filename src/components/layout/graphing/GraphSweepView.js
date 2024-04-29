@@ -116,7 +116,7 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
     // inline text for the log scale checkbox
     return (
         <GraphSweepViewContainer>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "10px" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "20px" }}>
                 <CECheckbox title={"Log Scale"} value={logScale} setValue={setLogScale} />
             </div>
             <canvas ref={canvasRef} />

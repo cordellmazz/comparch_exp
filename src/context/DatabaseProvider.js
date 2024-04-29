@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import atlasConfig from "../atlasConfig.json";
 import * as Realm from "realm-web";
+import { toast } from "react-toastify";
 
 const DatabaseContext = createContext({ state: {}, actions: {} });
 
@@ -15,121 +16,94 @@ const DatabaseProvider = ({ children }) => {
     const [loaded, setLoaded] = useState(false);
     const [app, setApp] = useState(Realm.getApp(atlasConfig.appId));
 
-    const [user, setUser] = useState(null);
-    // const [mongodb, setMongodb] = useState(null);
-    // const [database, setDatabase] = useState(null);
-
     // internal functions
-    async function loginAnonymously() {
-        // if no local storage credentials, create new credentials and store in local storage
-        let credentials = Realm.Credentials.anonymous();
-        const res = await app.logIn(credentials);
-        setUser(app.currentUser);
-        setLoaded(true);
-        console.log("Successfully logged in anonymously!");
-    }
-
     const cleanLocalStorageOfCredentials = () => {
-        // get realm-web:app(atlasConfig.appId):userIds from local storage
-        const userIds = JSON.parse(localStorage.getItem(`realm-web:app(${atlasConfig.appId}):userIds`));
-        console.log("userIds", userIds);
-        // for each userId, remove realm-web:token:app(atlasConfig.appId):<userId>
+        // Loop over all items in local storage
+        for (const key in localStorage) {
+            // Check if the key starts with 'realm-web'
+            if (key.startsWith(`realm-web:app(${atlasConfig.appId})`)) {
+                // Remove the item
+                localStorage.removeItem(key);
+            }
+        }
     };
 
     const logout = async () => {
         try {
-            //
             await app.currentUser?.logOut();
-            cleanLocalStorageOfCredentials();
-            setUser(null);
+            setLoaded(false);
             console.log("Successfully logged out!");
         } catch (error) {
             console.error("Failed to log out", error);
         }
     };
 
+    async function loginAnonymously() {
+        // if no local storage credentials, create new credentials and store in local storage
+        const refreshApp = Realm.getApp(atlasConfig.appId);
+        setApp(refreshApp);
+        let credentials = Realm.Credentials.anonymous();
+        const res = await refreshApp.logIn(credentials);
+        setLoaded(true);
+        console.log("Successfully logged in anonymously!");
+    }
+
     useEffect(() => {
-        // see if there are anonymous credentials in local storage, if not log in anonymously and store credentials in local storage
+        // see if there are anonymous credentials in local storage, if not log in anonymously
         if (!app.currentUser) {
+            console.log("Creating new anonymous user");
             loginAnonymously();
         } else {
             console.log("User already logged in");
-            setUser(app.currentUser);
             setLoaded(true);
         }
-        // return () => {
-        //     logout();
-        // };
     }, []);
 
-    async function testFunc(text) {
-        const result = await user.functions.testFunc(text);
-        console.log(result);
-    }
-
-    async function findByParams(searchDict) {
-        console.log("runnings");
-        console.log(searchDict);
-        if (loaded) {
-            try {
-                const result = await user.functions.findByParams(searchDict);
-                console.log(result);
-                return result;
-            } catch (error) {
-                console.error("Document could not be found", error);
-            }
-        } else {
-            console.error("Database not loaded");
-        }
-    }
-
     /**
-     * Returns all documents that fall within the given range
-     *
-     * @param {string} parameterName parameter by which to query
-     * @param {{"start": "<start of range>", "end": "<end of range>"}} range
-     * @returns all documents that fall within the given range
+     * Function to find simulations by parameters
+     * @param {*} searchDict The dictionary of parameters to search by
+     * @returns The result of the search
      */
-    async function queryByRange(parameterName, range) {
-        if (loaded) {
-            const result = await user.functions.queryByRange(parameterName, range);
-            console.log(result);
-            return result;
-        }
-    }
-
-    /**
-     * For use in the sweep SimMod
-     * @param {JSON} staticParams these parameters are not the focus of the query but are the base to filter on. expected structure {"parameterName": "value", ...}
-     * @param {JSON} sweepParams parameters to focus on in graphing.
-     * Expected structure {"parameterName": {"type": "range" or "list", "start": beginningVal, "end": endVal, "list": ["val1", "val2", ...] or [1, 2, 4], ...}
-     */
-    async function filterAndSweepRuns(staticParams, sweepParams) {
+    async function findByParams(searchDict, attempt = 0) {
+        console.log("Searching for simulations by parameters", searchDict);
         try {
-            if (loaded) {
-                const result = await user.functions.filterAndSweepRuns(staticParams, sweepParams);
+            // Ensure the app is loaded and there's a current user
+            const currentUser = app.currentUser;
+            if (loaded && currentUser) {
+                const result = await currentUser.functions.findByParams(searchDict);
                 console.log(result);
                 return result;
             } else {
-                return -1;
+                throw new Error("App not loaded or no current user.");
             }
         } catch (error) {
-            console.error("Error in filter and sweep request", error);
+            console.error("Error during findByParams: ", error);
+
+            // Handle specific error types
+            if (error.statusCode === 401 && attempt < 1) {
+                // Handle unauthorized error, clean up, and retry
+                console.log("Unauthorized access, handling reauthentication.");
+                await handleReauthentication();
+                console.log("Retrying after reauthentication...");
+                return findByParams(searchDict, attempt + 1);
+            } else {
+                // Handle other errors or retry limit reached
+                console.error("Query failed or retry limit reached", { attempt });
+                if (error.statusCode) {
+                    console.error(`Received status code: ${error.statusCode}`);
+                }
+            }
         }
     }
 
-    async function addRun(run) {
-        if (loaded) {
-            const result = await user.functions.addRun(run);
-            console.log(result);
-        }
+    async function handleReauthentication() {
+        // cleanLocalStorageOfCredentials();
+        await logout();
+        await loginAnonymously();
     }
 
     const exportValues = {
         findByParams,
-        testFunc,
-        filterAndSweepRuns,
-        addRun,
         loaded,
     };
 

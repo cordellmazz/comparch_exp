@@ -8,6 +8,7 @@ import {
     faCopy,
     faFileImport,
     faPlus,
+    faExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import ToolTipWrapper from "../ToolTipWrapper";
@@ -49,7 +50,7 @@ const SimModDiv = styled.div`
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;
-    min-width: max(25vw, 500px);
+    min-width: max(27vw, 500px);
     height: 94vh;
     max-width: max(75vw, 1000px);
     container-type: inline-size;
@@ -75,19 +76,20 @@ const SimModDivAnimated = styled(SimModDiv)`
 const InputUIContainer = styled.div`
     width: 100%;
     max-width: 25vw;
+    min-width: max(25vw, 500px);
 
     @container (min-width: 800px) {
-        color: red;
         margin-top: 25px;
-        max-width: max(25vw, 500px);
+        min-width: max(25vw, 500px);
     }
 `;
 
 const GraphUIContainer = styled.div`
     width: 100%;
+    min-width: max(25vw, 500px);
 
     @container (min-width: 800px) {
-        max-width: 25vw;
+        min-width: max(25vw, 500px);
     }
 `;
 
@@ -350,6 +352,22 @@ const NoteTakingArea = ({ notes, updateConfig }) => {
     );
 };
 
+const OutOfDateNotification = ({ active }) => {
+    if (!active) return null;
+
+    return (
+        <div
+            style={{
+                position: "relative",
+                zIndex: 10,
+                color: "red",
+            }}
+        >
+            <FontAwesomeIcon icon={faExclamation} />
+        </div>
+    );
+};
+
 export {
     CopyConfigButton,
     DeleteButton,
@@ -361,6 +379,7 @@ export {
     InputUIContainer,
     NoteTakingArea,
     NumberMarker,
+    OutOfDateNotification,
     PasteConfigButton,
     ReorderArrows,
     RowColSwapContainer,

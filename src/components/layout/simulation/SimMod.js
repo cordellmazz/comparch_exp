@@ -29,15 +29,20 @@ import {
     DuplicateConfigButton,
     GraphUIContainer,
     InputUIContainer,
+    OutOfDateNotification,
 } from "./SimModDivs.js";
 import GraphDefaultView from "../graphing/GraphDefaultView.js";
 import { toast } from "react-toastify";
 import CELoadingIcon from "../misc/CELoadingIcon.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
 export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shiftRight, duplicateConfig }) {
     // component states
     const [isDeleted, setIsDeleted] = useState(false); // for animation
     const [viewType, setViewType] = useState(config.view_type || "default"); // ["default", "sweep"]
+    const [oldInput, setOldInput] = useState(config.input);
+    const [inputChangeFlag, setInputChangeFlag] = useState(false);
 
     // graph data
     const { findByParams } = useDatabase();
@@ -81,6 +86,11 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
     useEffect(() => {
         if (!isDeleted) {
             setConfig(localConfig);
+            if (localConfig.input !== oldInput) {
+                setInputChangeFlag(true);
+            } else {
+                setInputChangeFlag(false);
+            }
         }
     }, [localConfig]);
 
@@ -112,20 +122,26 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                 Object.entries(inputSelections).filter(([key, value]) => key !== sweepParameter)
             );
         }
-        const result = await findByParams(staticParams);
-        setGetSimLoading(false);
-        // if result is empty array then error
-        if (result.length === 0) {
-            console.error("No results found for given parameters");
-            toast.error("No results found for given parameters!");
-            return;
+        try {
+            const result = await findByParams(staticParams);
+            setGetSimLoading(false);
+            // if result is empty array then error
+            if (result.length === 0) {
+                console.error("No results found for given parameters");
+                toast.error("No results found for given parameters!");
+                return;
+            }
+            toast("Simulation data retrieved!");
+            setInputChangeFlag(false);
+            setDbData(result);
+            setOldInput(config.input);
+        } catch (e) {
+            toast.error("Error in getting simulation!");
         }
-        toast("Simulation data retrieved!");
-        setDbData(result);
     }
     return (
         <SimModDivAnimated className={isDeleted ? "slide-out" : ""}>
-            <NumberMarker>#{index + 1}</NumberMarker>
+            {/* <NumberMarker>#{index + 1}</NumberMarker> */}
             <TitleInput
                 defaultValue={config.name === "" ? `Simulation ${index + 1}` : config.name}
                 onChange={(e) => updateConfig("name", e.target.value)}
@@ -146,6 +162,15 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                 }}
             />
             <DuplicateConfigButton config={config} duplicateConfig={duplicateConfig} />
+            <div style={{ zIndex: 100 }}>
+                <ToolTip
+                    tooltipText={`Module #${
+                        index + 1
+                    } \nButtons:\nShift Left\nShift Right\nSwitch to Sweep View \nCopy Config to Clipboard \nPaste Config from Clipboard \nDuplicate Config\nRemove Config`}
+                    position="below-right"
+                    leftAlign={true}
+                />
+            </div>
             <FlexBox>
                 <RowColSwapContainer>
                     {viewType === "default" ? (
@@ -160,7 +185,7 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                         />
                     )}
                     <InputUIContainer>
-                        <FlexColumn align={"left"}>
+                        <FlexColumn align={"center"}>
                             {viewType === "default" ? null : (
                                 <>
                                     <RecursiveStructure
@@ -170,10 +195,14 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                                             updateConfig(path, value, setMetricChoice);
                                         }}
                                     />
-                                    <CEButton title={"Add Metric"} func={addMetricToSet} />
-                                    <SelectedMetrics>
-                                        <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
-                                    </SelectedMetrics>
+                                    <div style={{ width: "80%" }}>
+                                        <CEButton title={"Add Metric"} func={addMetricToSet} />
+                                    </div>
+                                    <FlexColumn align={"left"}>
+                                        <SelectedMetrics>
+                                            <TextOptions texts={selectedMetrics} setTexts={setSelectedMetrics} />
+                                        </SelectedMetrics>
+                                    </FlexColumn>
                                     <SweepSelectorContainer>
                                         <FlexRow>
                                             <CEDropdown
@@ -206,7 +235,12 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                             {getSimLoading ? (
                                 <CELoadingIcon />
                             ) : (
-                                <CEButton title={"Get Simulation"} func={getSimulation} />
+                                <FlexRow>
+                                    {inputChangeFlag ? <OutOfDateNotification active={inputChangeFlag} /> : null}
+                                    <div style={{ width: "80%" }}>
+                                        <CEButton title={"Get Simulation"} func={getSimulation} />
+                                    </div>
+                                </FlexRow>
                             )}
                             <NoteTakingArea notes={config.notes} updateConfig={updateConfig} />
                         </FlexColumn>

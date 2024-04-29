@@ -1,46 +1,16 @@
-import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 
-// Tooltip Container
-const TooltipContainer = styled.div`
+const TipWrapper = styled.div`
     position: relative;
     display: inline-block;
-    cursor: help;
+
+    &:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
 `;
 
-// Dynamic positioning for the tooltip
-const getPositionStyles = (position) => {
-    switch (position) {
-        case "above":
-            return css`
-                bottom: 125%;
-                left: 50%;
-                margin-left: -60px;
-            `;
-        case "below":
-            return css`
-                top: 125%;
-                left: 50%;
-                margin-left: -60px;
-            `;
-        case "left":
-            return css`
-                top: 50%;
-                right: 110%;
-                margin-top: -15px;
-            `;
-        case "right":
-            return css`
-                top: 50%;
-                left: 110%;
-                margin-top: -15px;
-            `;
-        default:
-            return css``;
-    }
-};
-
-// Tooltip Text
 const TooltipText = styled.span`
     visibility: hidden;
     width: 120px;
@@ -51,45 +21,29 @@ const TooltipText = styled.span`
     padding: 5px 0;
     position: absolute;
     z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
     opacity: 0;
-    transition: opacity 0.3s, visibility 0s linear 0.3s;
-    border: 1px solid #ddd;
+    transition: opacity 0.3s;
 
-    ${({ position }) => getPositionStyles(position)}
+    &:after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
 `;
 
-// React Component for Tooltips
-export const ToolTipWrapper = ({ children, tooltipText, position = "above", hoverDelay = 500 }) => {
-    const [hoverTimeout, setHoverTimeout] = useState(null);
-
-    const handleMouseOver = () => {
-        const timeout = setTimeout(() => {
-            const tooltip = document.getElementById("tooltip-text");
-            if (tooltip) {
-                tooltip.style.visibility = "visible";
-                tooltip.style.opacity = 1;
-            }
-        }, hoverDelay);
-        setHoverTimeout(timeout);
-    };
-
-    const handleMouseOut = () => {
-        clearTimeout(hoverTimeout);
-        const tooltip = document.getElementById("tooltip-text");
-        if (tooltip) {
-            tooltip.style.visibility = "hidden";
-            tooltip.style.opacity = 0;
-        }
-    };
-
-    return (
-        <TooltipContainer onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
-            {children}
-            <TooltipText id="tooltip-text" position={position}>
-                {tooltipText}
-            </TooltipText>
-        </TooltipContainer>
-    );
-};
+const ToolTipWrapper = ({ children, description }) => (
+    <TipWrapper>
+        {children}
+        <TooltipText className="tooltip">{description}</TooltipText>
+    </TipWrapper>
+);
 
 export default ToolTipWrapper;
