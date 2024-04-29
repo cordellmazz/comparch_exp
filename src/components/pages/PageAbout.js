@@ -90,14 +90,14 @@ const PageAbout = () => {
                                 name: "Ben Endara",
                                 summary: "Generated the benchmarks and created the simulation script using Gem5.",
                                 image: "/images/ben.jpeg",
-                                website: "https://johndoe.com",
+                                website: "https://www.linkedin.com/in/bendara/",
                             },
                             {
                                 name: "Tianfang Guo",
                                 summary:
-                                    "Creative graphic designer with over 10 years of experience in creating stunning visuals for brands and businesses.",
+                                    "Spent countless hours pouring through gem5 documentation, still very confused.",
                                 image: "/images/tianfang.jpeg",
-                                website: "https://janesmith.com",
+                                website: "https://tianfangguo.github.io/",
                             },
                             {
                                 name: "Cord Mazzetti",
@@ -110,7 +110,7 @@ const PageAbout = () => {
                                 name: "Jackson Schilling",
                                 summary: "Worked on the database, data management, and documentation.",
                                 image: "/images/jackson.jpg",
-                                website: "https://alicebrown.com",
+                                website: "https://www.linkedin.com/in/jackson-s-097389136/",
                             },
                         ]}
                     />
@@ -128,7 +128,15 @@ const PageAbout = () => {
                             },
                         ]}
                     />
-                    <p>The code for this project can be found at [_____LINK____TO_____GITHUB______].</p>
+                    <p>
+                        The code for this project's site can be found at{" "}
+                        <a href="https://github.com/cordellmazz/comparch_exp">the comparch_exp GitHub repository</a> and
+                        the code for the simulator can be found at{" "}
+                        <a href="https://github.com/TianfangGuo/Computer-Architecture-Explorer">
+                            Computer-Architecture-Explorer GitHub repository
+                        </a>
+                        .
+                    </p>
                 </AboutText>
             </AboutContainer>
         </>

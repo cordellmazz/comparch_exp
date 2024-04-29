@@ -87,8 +87,45 @@ const PageHome = () => {
             <BackgroundBanner src={"/images/background3.jpeg"} />
             <WelcomeMessage>Comparch Explorer</WelcomeMessage>
             <CenteredContainer>
-                <SimulateButton onClick={handleSimulateClick}>EXPLORE</SimulateButton>
-                <p>The text is starting</p>
+                <SimulateButton style={{ marginBottom: "40px" }} onClick={handleSimulateClick}>
+                    EXPLORE
+                </SimulateButton>
+                <p>
+                    The goal of this project was to build an educational tool for students taking the course ECE460N
+                    Computer Architecture that will assist them as they learn material throughout the semester. There
+                    were several steps to accomplish this goal. First, we identified a large set of parameters, which
+                    were essential to the design of any computer architecture; we then considered a range of reasonable
+                    changes that could be made to these parameters, such as different memory organizational patterns,
+                    different types of microarchitecture, different branch predictors, etc. Secondly, we took this set
+                    of parameters, and simulated each of their performance using a simulator. Then the performance data
+                    was stored in a database for use in the user interface tool, which displays the stored data for
+                    students to access.
+                </p>
+                <p>
+                    Our system design includes three major subsystems: the simulator, database and data management, and
+                    website for the user interface. The simulator includes the parameters being simulated, the
+                    benchmarks those parameters are run against, and the simulator itself. The database consists of the
+                    database itself and data management for how the data is input from the simulator, digested for
+                    storage into the database, and the formatting and code to be output to the website. The website
+                    includes the integration from the database to frontend website code as well as the user interface
+                    for students to interact with in addition to graphical data representations.
+                </p>
+                <p>For a quick guide on using this site, please see the following video:</p>
+                <div style={{ minHeight: "473px" }}>
+                    <iframe
+                        width="840px"
+                        height="473px"
+                        src="https://www.youtube.com/embed/qxM0WZmKVzg?si=7wbuD__nAWZ-_-nE"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <p style={{ minHeight: "250px" }}>
+                    For more information about the site and the code please see the <a href="/about">about page</a>
+                </p>
             </CenteredContainer>
         </div>
     );
