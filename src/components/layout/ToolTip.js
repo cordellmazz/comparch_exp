@@ -50,13 +50,13 @@ const getPositionStyles = (position) => {
 const TooltipText = styled.span`
     white-space: pre-wrap;
     visibility: hidden;
-    width: ${(props) => (props.leftAlign ? "200px" : "250px")};
+    width: ${(props) => (props.leftalign === "true" ? "200px" : "250px")};
     background-color: white;
     color: black;
-    text-align: ${(props) => (props.leftAlign ? "left" : "center")};
+    text-align: ${(props) => (props.leftalign === "true" ? "left" : "center")};
     border-radius: 6px;
     padding: 5px 0;
-    padding-left: ${(props) => (props.leftAlign ? "10px" : "0")};
+    padding-left: ${(props) => (props.leftalign === "true" ? "10px" : "0")};
     position: absolute;
     z-index: 1;
     opacity: 0;
@@ -84,12 +84,12 @@ const InfoIcon = styled.div`
 `;
 
 // React Component
-const ToolTip = ({ tooltipText, position = "above", leftAlign = false }) => {
+const ToolTip = ({ tooltipText, position = "above", leftalign = "false" }) => {
     return (
         <TooltipContainer>
             <InfoIcon>
                 <FontAwesomeIcon icon={faInfoCircle} />
-                <TooltipText position={position} leftAlign={leftAlign}>
+                <TooltipText position={position} leftalign={leftalign}>
                     {tooltipText}
                 </TooltipText>
             </InfoIcon>

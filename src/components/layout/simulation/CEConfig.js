@@ -1,94 +1,3 @@
-// Objects associated with each parameter and if they are optional or not
-const ParameterTypes = {
-    CPU_TYPES: "dropdown.dsliders", // dropdown means only one option is presented at a time, and .dsliders means that the option will have a discrete (d) slider
-    BRANCH_PREDICTORS: "dropdown",
-    CACHE: "list.dsliders", // list means all options are presented at once
-    PREFETCHERS: "dropdown",
-    REPLACEMENT_POLICIES: "dropdown",
-    COHERENCE_POLICIES: "dropdown",
-};
-
-const ParameterOptional = {
-    CPU_TYPES: false,
-    BRANCH_PREDICTORS: true,
-    CACHE: false,
-    PREFETCHERS: true,
-    REPLACEMENT_POLICIES: false,
-    COHERENCE_POLICIES: false,
-};
-
-const CpuTypes = {
-    // both of these will need timing slider values
-    In_order_pipeline: {
-        magnitude: [10, 20, 30],
-        type: { fast: "fast", medium: "medium", slow: "slow" },
-    },
-    Out_of_order_pipeline: [40, 50, 60],
-};
-
-const BranchPredictors = {
-    TWO_BIT_LOCAL: "2 bit local",
-    BTB: "BTB",
-    BI_MODE: "Bi mode",
-    INDIRECT: "Indirect",
-    LOOP_PREDICTOR: "Loop predictor",
-    TAGE: "TAGE",
-    PERCEPTRON: "Perceptron",
-};
-
-// mock nested dictonaries for now
-const Cache = {
-    Size: [0, 2, 4, 8, 16, 32, 64],
-    Associativity: [1, 2, 3, 4, 5],
-    Tag_latency: [0, 2, 4, 8, 16, 32, 64],
-    Response_latency: [0, 2, 4, 8, 16, 32, 64],
-    Number_of_MSHRs: [0, 2, 4, 8, 16, 32, 64],
-    Targets_of_MSHRs: [0, 2, 4, 8, 16, 32, 64], // may not be needed
-};
-
-const Prefetchers = {
-    ACCESS_MAP_PATTERN_MATCHING: "Access map pattern matching",
-    ASSOCIATIVE_SET: "Associative set",
-    BASE: "Base",
-    BOP: "Bop",
-    DELTA_CORRELATING_PREDICTION: "Delta correlating prediction",
-    INDIRECT_MEMORY: "Indirect memory",
-    IRREGULAR_STREAM_BUFFER: "Irregular stream buffer",
-    MULTI: "Multi",
-    PIF: "PIF",
-    QUEUED: "Queued",
-    SBOOE: "Sbooe",
-    SIGNATURE_PATH: "Signature path",
-    SLIM_AMP: "Slim ampm",
-    SPATIO_TEMPORAL_MEMORY_STREAMING: "Spatio/temporal memory streaming",
-    STRIDE: "Stride",
-    TAGGED: "Tagged",
-};
-
-const ReplacementPolicies = {
-    BASE: "Base",
-    BIP: "bip",
-    BRRIP: "brrip",
-    DUELING: "Dueling",
-    FIFO: "FIFO",
-    LFU: "LFU",
-    LRU: "LRU",
-    MRU: "MRU",
-    RANDOM: "Random",
-    REPLACEABLE_ENTRY: "Replaceable entry",
-    SECOND_CHANCE: "Second chance",
-    SHIP: "Ship",
-    TREE: "Tree",
-    WEIGHTED_LRU: "Weighted LRU",
-};
-
-const CoherencePolicies = {
-    NOT_COHERENT: "Not coherent",
-    MESI_2_LEVEL: "MESI 2 level",
-    MESI_3_LEVEL: "MESI 3 level",
-    MOESI: "MOESI",
-};
-
 /**
  * The structure of the simulation module configuration. Determines the layout of the configuration as well as the default config values.
  *
@@ -101,142 +10,6 @@ const CoherencePolicies = {
  * 5. If an input is optional, set the optional key to true. This will add an enabled key to the input configuration.
  * 6. The input types for the options are dropdown and dsliders. This value is used in the ConfigInput component.
  */
-// const simModStructure = {
-//     CPU: {
-//         title: "CPU",
-//         options: {
-//             CPU_TYPES: {
-//                 title: "CPU Types",
-//                 dynamic: true,
-//                 type: "dropdown",
-//                 options: {
-//                     TEST: {
-//                         title: "Test",
-//                         // dependent: false, // should be inferred
-//                         type: "dsliders",
-//                         options: [1, 2, 3],
-//                     },
-//                     IN_ORDER_PIPELINE: {
-//                         title: "In Order Pipeline",
-//                         dependent: true,
-//                         dynamic: true,
-//                         type: "dropdown",
-//                         options: {
-//                             MAGNITUDE: {
-//                                 title: "Magnitude",
-//                                 type: "dsliders",
-//                                 dependent: true,
-//                                 optional: true,
-//                                 options: CpuTypes.In_order_pipeline.magnitude,
-//                             },
-//                             TYPE: {
-//                                 title: "Type",
-//                                 type: "dropdown",
-//                                 dependent: true,
-//                                 options: CpuTypes.In_order_pipeline.type,
-//                             },
-//                         },
-//                     },
-//                     OUT_OF_ORDER_PIPELINE: {
-//                         title: "Out of Order Pipeline",
-//                         dependent: true,
-//                         type: "dsliders",
-//                         options: CpuTypes.Out_of_order_pipeline,
-//                     },
-//                 },
-//             },
-//         },
-//     },
-//     BRANCH_PREDICTORS: {
-//         title: "Branch Predictors",
-//         type: "dropdown",
-//         optional: true,
-//         options: BranchPredictors,
-//     },
-//     CACHE: {
-//         title: "Cache",
-//         options: {
-//             SIZE: {
-//                 title: "Size",
-//                 dynamic: true,
-//                 optional: true,
-//                 type: "dropdown",
-//                 options: {
-//                     SUB_SIZE: {
-//                         title: "sub size",
-//                         type: "dropdown",
-//                         dependent: true,
-//                         options: [10, 20, 30, 40],
-//                     },
-//                     SUPER_SIZE: {
-//                         title: "super size",
-//                         type: "dropdown",
-//                         dependent: true,
-//                         options: [100, 200, 300, 400],
-//                     },
-//                     PEAS: {
-//                         title: "peas",
-//                         type: "dropdown",
-//                         // dependent: false,
-//                         options: [10, 20, 30, 40],
-//                     },
-//                     PEAS_2: {
-//                         title: "peas 2",
-//                         type: "dropdown",
-//                         // dependent: false,
-//                         options: [10, 20, 30, 40],
-//                     },
-//                 },
-//             },
-//             ASSOCIATIVITY: {
-//                 title: "Associativity",
-//                 type: "dsliders",
-//                 options: Cache.Associativity,
-//             },
-//             TAG_LATENCY: {
-//                 title: "Tag Latency",
-//                 type: "dsliders",
-//                 options: Cache.Tag_latency,
-//             },
-//             RESPONSE_LATENCY: {
-//                 title: "Response Latency",
-//                 type: "dsliders",
-//                 options: Cache.Response_latency,
-//             },
-//             NUMBER_OF_MSHRS: {
-//                 title: "Number of MSHRs",
-//                 type: "dsliders",
-//                 options: Cache.Number_of_MSHRs,
-//             },
-//             TARGETS_OF_MSHRS: {
-//                 title: "Targets of MSHRs",
-//                 type: "dsliders",
-//                 options: Cache.Targets_of_MSHRs,
-//             },
-//         },
-//     },
-//     PREFETCHERS: {
-//         title: "Prefetchers",
-//         type: "dropdown",
-//         optional: true,
-//         options: Prefetchers,
-//     },
-//     POLICIES: {
-//         title: "Policies",
-//         options: {
-//             REPLACEMENT_POLICIES: {
-//                 title: "Replacement Policies",
-//                 type: "dropdown",
-//                 options: ReplacementPolicies,
-//             },
-//             COHERENCE_POLICIES: {
-//                 title: "Coherence Policies",
-//                 type: "dropdown",
-//                 options: CoherencePolicies,
-//             },
-//         },
-//     },
-// };
 
 // BaseO3CPU has all params
 // l1d_size = {"8192", "32768", "131072"}
@@ -339,61 +112,12 @@ const simModStructure = {
     },
 };
 
-// const simModStructure = {
-//     CORE_TYPE: {
-//         title: "Core Type",
-//         type: "dropdown",
-//         options: ["BaseO3CPU"],
-//     },
-//     L1D_SIZE: {
-//         title: "L1D Size",
-//         type: "dsliders",
-//         options: ["8192", "32768", "131072"],
-//     },
-//     L2_SIZE: {
-//         title: "L2 Size",
-//         type: "dsliders",
-//         options: ["131072", "524288", "2097152"],
-//     },
-//     BRANCH_PRED_TYPE: {
-//         title: "Branch Predictor Type",
-//         type: "dropdown",
-//         options: ["LocalBP", "MultiperspectivePerceptron8KB", "TAGE"],
-//     },
-//     NUM_ROB_ENTRIES: {
-//         title: "Number of ROB Entries",
-//         type: "dsliders",
-//         options: ["32", "128", "512"],
-//     },
-//     NUM_PHYS_INT_REGS: {
-//         title: "Number of Physical Integer Registers",
-//         type: "dsliders",
-//         options: ["128", "256", "512"],
-//     },
-//     FU_LIST_0_COUNT: {
-//         title: "FU List 0 Count",
-//         type: "dsliders",
-//         options: ["1", "4", "16"],
-//     },
-//     FU_LIST_1_COUNT: {
-//         title: "FU List 1 Count",
-//         type: "dsliders",
-//         options: ["1", "4", "16"],
-//     },
-// };
-
 const metricOptions = {
     GROUPS: {
         title: "Metric Options Groups:",
         dynamic: true,
         type: "dropdown",
         options: {
-            // SIMULATION: {
-            //     title: "Simulation metrics",
-            //     type: "dropdown",
-            //     dependent: true,
-            //     options: ["simSeconds", "simTicks", "finalTick", "simFreq", "hostSeconds", "hostTickRate"],
-            // },
             L1: {
                 title: "L1 parameters",
                 type: "dropdown",
@@ -695,30 +419,6 @@ function getOrCreateConfigPath(config, path) {
     return currentSegment;
 }
 
-// function findSelected(obj, prevKey = "") {
-//     let retDict = {}; // dict of all selected values with their keys
-
-//     // for each key-value pair in the object
-//     Object.entries(obj).forEach(([key, value]) => {
-//         if (typeof value === "object" && !value.selected) {
-//             // if current value is an object and does nto have a selected key, call findDeepestSelected
-//             retDict = { ...retDict, ...findDeepestSelected(value, key) };
-//         } else {
-//             if (typeof value === "object") {
-//                 // if the value of the object at the selected key is an object, call findDeepestSelected
-//                 retDict = { ...retDict, ...findDeepestSelected(value, key) };
-//             } else {
-//                 // if there is no object at the selected key, return the value of selected
-//                 // if the object is enabled or does not have an enabled key, add it to the return dictionary
-//                 if (obj.enabled === undefined || obj.enabled) {
-//                     retDict[prevKey] = value;
-//                 }
-//             }
-//         }
-//     });
-//     return retDict;
-// }
-
 function findSelected(obj, prevKey = "") {
     let retDict = {};
     // if the object has a selected key call find selected on the value of the selected key
@@ -757,34 +457,7 @@ if (localStorage.getItem("defaultConfig") === null) {
         localStorage.removeItem("configs");
     }
 }
-// console.log("Updated Input Configuration with Dynamic Selections:", DefaultConfig);
 
 const DefaultMetricsConfig = processConfig(metricOptions);
 
-/**
- * l1d_size
- * l1i_size
- * l2_size
- * memory_type
- * memory_size
- * cpu_type
- * isa
- * num_cores
- * board_clk_freq
- */
-
-export {
-    ParameterTypes,
-    ParameterOptional,
-    CpuTypes,
-    BranchPredictors,
-    Cache,
-    Prefetchers,
-    ReplacementPolicies,
-    CoherencePolicies,
-    DefaultConfig,
-    DefaultMetricsConfig,
-    simModStructure,
-    metricOptions,
-    findSelected,
-};
+export { DefaultConfig, DefaultMetricsConfig, simModStructure, metricOptions, findSelected };

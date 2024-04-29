@@ -83,7 +83,6 @@ const CEDiscreteSlider = ({ width, height, options, value, setValue, title = "",
             </SliderContainer>
         );
     } catch (e) {
-        console.log("Error in CEDiscreteSlider:", e);
         return null;
     }
 };

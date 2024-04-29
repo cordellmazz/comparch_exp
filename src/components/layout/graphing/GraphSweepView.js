@@ -57,7 +57,6 @@ function GraphSweepView({ config = null, updateConfig, selectedMetrics, sweepPar
         }
 
         if (dbData) {
-            console.log("Building chart with data: ", dbData);
             // Initialize the chart using the canvas ref
             const orderedDbData = sortMetricsByValue(dbData, sweepParameter);
 

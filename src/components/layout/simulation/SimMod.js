@@ -127,7 +127,6 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
             setGetSimLoading(false);
             // if result is empty array then error
             if (result.length === 0) {
-                console.error("No results found for given parameters");
                 toast.error("No results found for given parameters!");
                 return;
             }
@@ -168,7 +167,7 @@ export function SimMod({ config, setConfig, index, deleteConfig, shiftLeft, shif
                         index + 1
                     } \nButtons:\nShift Left\nShift Right\nSwitch to Sweep View \nCopy Config to Clipboard \nPaste Config from Clipboard \nDuplicate Config\nRemove Config`}
                     position="below-right"
-                    leftAlign={true}
+                    leftalign={"true"}
                 />
             </div>
             <FlexBox>

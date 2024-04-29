@@ -32,9 +32,8 @@ const DatabaseProvider = ({ children }) => {
         try {
             await app.currentUser?.logOut();
             setLoaded(false);
-            console.log("Successfully logged out!");
         } catch (error) {
-            console.error("Failed to log out", error);
+            toast.error("Failed to log out");
         }
     };
 
@@ -45,16 +44,13 @@ const DatabaseProvider = ({ children }) => {
         let credentials = Realm.Credentials.anonymous();
         const res = await refreshApp.logIn(credentials);
         setLoaded(true);
-        console.log("Successfully logged in anonymously!");
     }
 
     useEffect(() => {
         // see if there are anonymous credentials in local storage, if not log in anonymously
         if (!app.currentUser) {
-            console.log("Creating new anonymous user");
             loginAnonymously();
         } else {
-            console.log("User already logged in");
             setLoaded(true);
         }
     }, []);
@@ -65,33 +61,24 @@ const DatabaseProvider = ({ children }) => {
      * @returns The result of the search
      */
     async function findByParams(searchDict, attempt = 0) {
-        console.log("Searching for simulations by parameters", searchDict);
         try {
             // Ensure the app is loaded and there's a current user
             const currentUser = app.currentUser;
             if (loaded && currentUser) {
                 const result = await currentUser.functions.findByParams(searchDict);
-                console.log(result);
                 return result;
             } else {
                 throw new Error("App not loaded or no current user.");
             }
         } catch (error) {
-            console.error("Error during findByParams: ", error);
-
             // Handle specific error types
             if (error.statusCode === 401 && attempt < 1) {
                 // Handle unauthorized error, clean up, and retry
-                console.log("Unauthorized access, handling reauthentication.");
                 await handleReauthentication();
-                console.log("Retrying after reauthentication...");
                 return findByParams(searchDict, attempt + 1);
             } else {
                 // Handle other errors or retry limit reached
-                console.error("Query failed or retry limit reached", { attempt });
-                if (error.statusCode) {
-                    console.error(`Received status code: ${error.statusCode}`);
-                }
+                toast.error("Failed to find simulations by parameters");
             }
         }
     }

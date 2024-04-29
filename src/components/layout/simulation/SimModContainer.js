@@ -118,7 +118,8 @@ function SimModContainer() {
             }
             setLoaded(true);
         } catch (e) {
-            console.error("Error loading configs:", e);
+            toast.error("Error loading configs from local storage!", { autoClose: 1000 });
+            setLoaded(true);
         }
     }, []);
 
@@ -241,7 +242,6 @@ function SimModContainer() {
         if (!simSets || chosenSimSet === "") {
             const firstSimSet = Object.keys(simSets)[0];
             setChosenSimSet(firstSimSet);
-            console.log("chosenSimSet", chosenSimSet);
         }
         setLoadDialogOpen(true);
     };
@@ -252,7 +252,6 @@ function SimModContainer() {
             toast.error("No simulation set chosen!", { autoClose: 1000 });
             return;
         }
-        console.log("chosenSimSet", chosenSimSet, simSets[chosenSimSet]);
 
         const confirmLoad = window.confirm(
             "Are you sure you want to load this simulation set? Any unsaved changes will be lost."
@@ -285,7 +284,6 @@ function SimModContainer() {
             return;
         }
 
-        console.log("delete sim set,", chosenSimSet);
         let saves = JSON.parse(localStorage.getItem("saves"));
         if (!saves) {
             return;
@@ -304,7 +302,6 @@ function SimModContainer() {
     };
 
     const exportSimSet = () => {
-        console.log("simSets", simSets, chosenSimSet);
         const simSet = simSets[chosenSimSet];
         if (!simSet) {
             toast.error("Simulation set not found!", { autoClose: 1000 });

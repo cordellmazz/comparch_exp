@@ -35,11 +35,7 @@ export default function SimModTest({}) {
         CEReplacementPolicies,
         CECoherencePolicies,
     };
-    const config = createFormConfig(
-        CEParameterTypes,
-        CEParameterOptional,
-        specificConfigs
-    );
+    const config = createFormConfig(CEParameterTypes, CEParameterOptional, specificConfigs);
     // Dynamically initialize state based on config
     const [formData, setFormData] = useState(
         config.reduce((acc, curr) => {
@@ -64,9 +60,7 @@ export default function SimModTest({}) {
                         type="checkbox"
                         name={input.name}
                         checked={!!formData[input.name]}
-                        onChange={(e) =>
-                            handleChange(input.name, e.target.checked)
-                        }
+                        onChange={(e) => handleChange(input.name, e.target.checked)}
                     />
                 );
             case "dropdown":
@@ -75,9 +69,7 @@ export default function SimModTest({}) {
                     <select
                         name={input.name}
                         value={formData[input.name]}
-                        onChange={(e) =>
-                            handleChange(input.name, e.target.value)
-                        }
+                        onChange={(e) => handleChange(input.name, e.target.value)}
                     >
                         {input.options.map((option, index) => (
                             <option key={index} value={option}>
@@ -97,12 +89,7 @@ export default function SimModTest({}) {
                             name={`${input.name}_${option}`}
                             min="0"
                             max="10"
-                            onChange={(e) =>
-                                handleChange(
-                                    `${input.name}_${option}`,
-                                    e.target.value
-                                )
-                            }
+                            onChange={(e) => handleChange(`${input.name}_${option}`, e.target.value)}
                         />
                     </div>
                 ));
@@ -113,7 +100,6 @@ export default function SimModTest({}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
     };
 
     return (

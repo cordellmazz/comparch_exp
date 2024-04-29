@@ -74,7 +74,6 @@ const CEDropdown = ({ width, height, value, setValue, title = "", options, descr
             </DropdownContainer>
         );
     } catch (e) {
-        console.log("Error in CEDiscreteSlider:", e);
         return null;
     }
 };

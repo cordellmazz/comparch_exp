@@ -2,6 +2,7 @@ import CEDropdown from "./CEDropdown";
 import CEDiscreteSlider from "./CEDiscreteSlider";
 import { simModStructure } from "../layout/simulation/CEConfig";
 import styled from "styled-components";
+import { toast } from "react-toastify";
 
 const Container = styled.div`
     width: 100%;
@@ -51,8 +52,6 @@ const ConditionalWrapper = ({ children, title, enabled, setEnabled }) => {
     );
 };
 
-// WHY WAS IT DOING THAT? It would go through the dict and get the value
-// but then sometimes it would return a JSON object instead of a string
 function getValueInConfig(config, path) {
     try {
         const pathSegments = path.toLowerCase().split(".");
@@ -70,7 +69,7 @@ function getValueInConfig(config, path) {
 
         return currentSegment;
     } catch (e) {
-        console.log("Config value error, likely input and structure mismatch:", e);
+        return null;
     }
 }
 
@@ -103,9 +102,6 @@ const generateTerminalComponent = (key, value, config, updateConfig, description
     }
 };
 
-// Not sure if that JSON stringify error is still happening (don't think it is)
-// Next need to make it so the enabled checkboxes modify the config value as well
-// then it is on to adding the graphing
 const renderSimModule = (structure, keyPrefix = "", config, updateConfig) => {
     try {
         return Object.entries(structure).map(([key, value]) => {
@@ -187,7 +183,8 @@ const renderSimModule = (structure, keyPrefix = "", config, updateConfig) => {
             );
         });
     } catch (e) {
-        console.error(e);
+        toast.error("Error rendering inputs.");
+        return null;
     }
 };
 
@@ -195,7 +192,8 @@ const RecursiveStructure = ({ structure = simModStructure, prefix = "", config, 
     try {
         return <Container>{renderSimModule(structure, prefix, config, updateConfig)}</Container>;
     } catch (e) {
-        console.error("Error rendering inputs.", e);
+        toast.error("Error rendering inputs.");
+        return null;
     }
 };
 
